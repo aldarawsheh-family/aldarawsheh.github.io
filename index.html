@@ -138,14 +138,14 @@ var branches=document.getElementById('fourBranches');
 // 0.5s: ورق بردي يظهر
 setTimeout(function(){pap.classList.add('visible')},500);
 
-// 5s: ورق بردي يتلاشى
-setTimeout(function(){pap.classList.add('hidden')},5000);
+// 4s: ورق بردي يتلاشى (كان 5s)
+setTimeout(function(){pap.classList.add('hidden')},4000);
 
-// 5.5s: درويش يظهر
-setTimeout(function(){founder.classList.add('visible')},5500);
+// 4.3s: درويش يظهر (كان 5.5s)
+setTimeout(function(){founder.classList.add('visible')},4300);
 
-// 7.5s: 4 أجداد يظهرون
-setTimeout(function(){branches.classList.add('visible')},7500);
+// 5s: 4 أجداد يظهرون (كان 7.5s)
+setTimeout(function(){branches.classList.add('visible')},5000);
 
 function endScene(){
 sc.classList.add('fade-out');
