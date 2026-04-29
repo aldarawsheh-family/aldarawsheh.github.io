@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>شجرة الدراوشة | عشيرة العليان</title>
-<meta name="description" content="شجرة عائلة الدراوشة - الدرواشة - عشيرة العليان - بني خالد">
-<meta name="keywords" content="شجرة الدراوشة, الدرواشة, الدرويش, دراوشة, عشيرة العليان, بني خالد">
-<meta name="robots" content="index, follow">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<meta name="description" content="شجرة عائلة الدراوشة - عشيرة العليان - بني خالد">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="data.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
-/* ===== رسالة الترحيب ===== */
 .welcome-intro{position:fixed;inset:0;z-index:20000;background:rgba(0,0,0,0.95);display:flex;justify-content:center;align-items:center;backdrop-filter:blur(10px)}
 .welcome-box{background:linear-gradient(135deg,#1a1206,#2d1f0a,#1a1206);border:2px solid #c9a050;border-radius:20px;padding:25px 20px;text-align:center;max-width:380px;width:90%;box-shadow:0 0 60px rgba(201,160,80,0.3)}
 .welcome-box .falcons{font-size:2rem}
@@ -21,102 +16,84 @@
 .welcome-box p{color:#ddd;font-size:0.8rem;line-height:1.6;margin-bottom:15px}
 .welcome-box .hl{color:#c9a050;font-weight:700}
 .welcome-btn{background:linear-gradient(135deg,#8b6914,#c9a050);color:#000;border:none;padding:12px 40px;border-radius:30px;font-family:'Cairo';font-weight:700;font-size:1rem;cursor:pointer;box-shadow:0 0 30px rgba(201,160,80,0.4);transition:0.3s}
-.welcome-btn:active{transform:scale(0.95)}
 
-/* ===== المشهد الأسطوري ===== */
-.epic-overlay{position:fixed;inset:0;z-index:10000;background:radial-gradient(ellipse at center,#0a0a0a 0%,#000 100%);display:none;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;opacity:1;transition:opacity 0.8s}
+.epic-overlay{position:fixed;inset:0;z-index:10000;background:#050505;display:none;align-items:center;justify-content:center;flex-direction:column;overflow:hidden;opacity:1;transition:opacity 1s}
 .epic-overlay.on{display:flex}
 .epic-overlay.fade-out{opacity:0;pointer-events:none}
 
-/* بوابة كونية */
-.portal{position:absolute;width:250px;height:250px;border-radius:50%;background:conic-gradient(from 0deg,#000,#1a0a00,#c9a050,#000,#3d1f08,#c9a050,#000);animation:portalSpin 3s linear infinite;box-shadow:0 0 80px rgba(201,160,80,0.5),0 0 150px rgba(0,0,0,0.8) inset;opacity:0}
-.portal.appear{animation:portalIn 1s ease forwards,portalSpin 3s linear infinite}
-@keyframes portalSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-@keyframes portalIn{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
+.stars{position:absolute;inset:0}
+.star{position:absolute;background:#fff;border-radius:50%;opacity:0;animation:twinkle 3s infinite}
+@keyframes twinkle{0%,100%{opacity:0.2}50%{opacity:1}}
 
-/* برق */
-.lightning-bolt{position:absolute;width:3px;background:linear-gradient(to bottom,transparent,#fff,#ffd700,#fff,transparent);border-radius:3px;opacity:0;z-index:5;box-shadow:0 0 40px #ffd700,0 0 80px #fff}
-.lightning-bolt.strike{animation:boltStrike 0.3s ease-out forwards}
-@keyframes boltStrike{0%{opacity:0}15%{opacity:1}30%{opacity:0.4}45%{opacity:1}60%{opacity:0.7}75%{opacity:1}100%{opacity:0}}
+.crescent{position:absolute;width:300px;height:300px;border-radius:50%;box-shadow:20px -20px 0 0 #b8860b;transform:rotate(-30deg);opacity:0;z-index:2;filter:drop-shadow(0 0 30px rgba(184,134,11,0.6))}
+.crescent.rise{animation:crescentRise 2s ease forwards}
+@keyframes crescentRise{0%{opacity:0;transform:rotate(-30deg) scale(0.3) translateY(100px)}100%{opacity:0.9;transform:rotate(-30deg) scale(1) translateY(0)}}
 
-/* الصقور */
-.falcon-swarm{position:absolute;font-size:3rem;opacity:0;filter:drop-shadow(0 0 30px #ffd700);pointer-events:none;z-index:10}
-.falcon-swarm.fly{animation:swarmFly 2s ease-in-out forwards}
-@keyframes swarmFly{0%{opacity:0;transform:translate(0,0) scale(0.3)}30%{opacity:1}100%{opacity:1;transform:translate(var(--tx),var(--ty)) scale(1)}}
+.arabesque{position:absolute;width:400px;height:400px;border:2px solid rgba(201,160,80,0.3);border-radius:50%;opacity:0;z-index:3}
+.arabesque.show{animation:arabAppear 2s 0.5s ease forwards}
+.arab-inner{position:absolute;inset:20px;border:1px solid rgba(201,160,80,0.2);border-radius:50%}
+.arab-inner2{position:absolute;inset:50px;border:1px solid rgba(201,160,80,0.15);border-radius:50%}
+.arab-dot{position:absolute;width:6px;height:6px;background:#c9a050;border-radius:50%;box-shadow:0 0 10px #c9a050}
+@keyframes arabAppear{0%{opacity:0;transform:scale(0.8)}100%{opacity:1;transform:scale(1)}}
 
-/* ذهب سائل */
-.liquid-gold{font-family:'Cairo',sans-serif;font-size:3rem;font-weight:900;background:linear-gradient(to bottom,#ffd700,#ff8c00,#ffd700,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px #ff8c00);opacity:0;z-index:20;position:relative;text-align:center}
-.liquid-gold.flow{animation:goldFlow 1.5s ease forwards}
-@keyframes goldFlow{0%{opacity:0;transform:translateY(-60px);filter:drop-shadow(0 0 0px #ff8c00)}50%{opacity:1}100%{opacity:1;transform:translateY(0);filter:drop-shadow(0 0 40px #ffd700)}}
-.liquid-sub{font-family:'Amiri',serif;font-size:1.4rem;color:#c9a050;opacity:0;text-align:center;z-index:20}
-.liquid-sub.flow{animation:goldFlow 1.5s 0.3s ease forwards}
+.golden-text{font-family:'Amiri',serif;font-size:3.5rem;font-weight:700;color:#c9a050;text-shadow:0 0 40px rgba(201,160,80,0.6),0 0 80px rgba(201,160,80,0.3);z-index:10;opacity:0;text-align:center;letter-spacing:8px}
+.golden-text.write{animation:textWrite 2s 2.5s ease forwards,textGlow 3s 3s infinite}
+@keyframes textWrite{0%{opacity:0;letter-spacing:30px;transform:scale(1.3)}100%{opacity:1;letter-spacing:8px;transform:scale(1)}}
+@keyframes textGlow{0%,100%{text-shadow:0 0 40px rgba(201,160,80,0.6)}50%{text-shadow:0 0 70px rgba(201,160,80,1),0 0 120px rgba(201,160,80,0.5)}}
 
-/* انفجار */
-.blast{position:absolute;width:10px;height:10px;background:#fff;border-radius:50%;box-shadow:0 0 100px #fff,0 0 200px #ffd700,0 0 400px #ff8c00;z-index:30;opacity:0}
-.blast.boom{animation:blastBoom 1.2s ease-out forwards}
-@keyframes blastBoom{0%{opacity:0;transform:scale(1)}30%{opacity:1;transform:scale(80)}100%{opacity:0;transform:scale(150)}}
+.silver-text{font-family:'Amiri',serif;font-size:1.3rem;color:#b0b0b0;z-index:10;opacity:0;text-align:center;letter-spacing:5px;margin-top:8px}
+.silver-text.fade{animation:fadeUp 1.5s 3.5s ease forwards}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 
-/* سيوف */
-.sword{position:absolute;font-size:5rem;opacity:0;z-index:25;filter:drop-shadow(0 0 30px rgba(201,160,80,0.8))}
-.sword.left{transform:rotate(35deg);left:25%}
-.sword.right{transform:rotate(-35deg);right:25%}
-.sword.drop{animation:swordDrop 0.8s ease forwards}
-@keyframes swordDrop{0%{opacity:0;transform:translateY(-300px) rotate(0deg)}60%{opacity:1;transform:translateY(10px) rotate(var(--rot))}80%{transform:translateY(-5px) rotate(var(--rot))}100%{opacity:1;transform:translateY(0) rotate(var(--rot))}}
+.founder-box{position:relative;z-index:15;text-align:center;opacity:0;margin-top:30px}
+.founder-box.reveal{animation:founderReveal 1.5s 5.5s ease forwards}
+.founder-crown{font-size:3rem;animation:crownFloat 2s 6s infinite}
+.founder-name{font-family:'Cairo',sans-serif;font-size:4.5rem;font-weight:900;color:#ffffff;text-shadow:0 0 60px rgba(255,255,255,0.8),0 0 120px rgba(201,160,80,0.5),0 0 200px rgba(201,160,80,0.3);letter-spacing:14px}
+@keyframes founderReveal{0%{opacity:0;transform:scale(3)}70%{opacity:1;transform:scale(0.95)}100%{opacity:1;transform:scale(1)}}
+@keyframes crownFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
 
-/* درويش */
-.founder-container{position:relative;z-index:35;text-align:center;opacity:0}
-.founder-container.reveal{animation:founderReveal 1.2s ease forwards}
-.founder-name{font-family:'Cairo',sans-serif;font-size:4.5rem;font-weight:900;color:#ffd700;text-shadow:0 0 50px #ffaa00,0 0 100px #ff8c00,0 0 200px #ff6600,0 0 20px #000;letter-spacing:10px}
-.founder-crown{font-size:2.5rem;animation:crownFloat 2s ease-in-out infinite}
-@keyframes founderReveal{0%{opacity:0;transform:scale(4)}70%{opacity:1;transform:scale(0.9)}100%{opacity:1;transform:scale(1)}}
-@keyframes crownFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+.children-row{position:absolute;bottom:10%;display:flex;gap:30px;z-index:20;opacity:0;justify-content:center;width:100%}
+.children-row.show{animation:childrenUp 1s 7.5s ease forwards}
+.child-box{text-align:center;position:relative}
+.child-box::before{content:'';position:absolute;top:-90px;left:50%;transform:translateX(-50%);width:2px;height:90px;background:linear-gradient(to bottom,#c9a050,transparent);box-shadow:0 0 15px rgba(201,160,80,0.4)}
+.child-tag{font-family:'Cairo',sans-serif;font-size:1.1rem;font-weight:700;padding:8px 16px;border:1px solid rgba(201,160,80,0.4);border-radius:8px;background:rgba(0,0,0,0.8);color:#e0c080;text-shadow:0 0 10px rgba(201,160,80,0.3)}
+@keyframes childrenUp{0%{opacity:0;bottom:2%}100%{opacity:1;bottom:10%}}
 
-/* أعمدة الأبناء */
-.children-pillars{position:absolute;bottom:12%;display:flex;gap:25px;z-index:40;opacity:0;justify-content:center;width:100%}
-.children-pillars.show{animation:pillarsUp 1s ease forwards}
-.child-item{text-align:center;position:relative}
-.child-item::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:2px;height:100px;background:linear-gradient(to bottom,#ffd700,transparent);box-shadow:0 0 20px #ffd700;animation:pillarBeam 1.5s ease-in-out infinite}
-.child-name{font-family:'Cairo',sans-serif;font-size:1.2rem;font-weight:700;color:#ffd700;text-shadow:0 0 20px rgba(255,215,0,0.6);background:rgba(0,0,0,0.8);padding:8px 16px;border:1px solid rgba(255,215,0,0.3);border-radius:8px}
-@keyframes pillarsUp{0%{opacity:0;bottom:0}100%{opacity:1;bottom:12%}}
-@keyframes pillarBeam{0%,100%{box-shadow:0 0 20px #ffd700}50%{box-shadow:0 0 40px #fff,0 0 60px #ffd700}}
-
-/* نمو الشجرة */
-.growing-tree{position:absolute;bottom:0;left:0;right:0;height:50%;z-index:45;opacity:0}
-.growing-tree.grow{animation:treeGrow 3s ease forwards}
-.tree-svg{width:100%;height:100%}
-.tree-branch{stroke:#c9a050;stroke-width:1.5;fill:none;stroke-dasharray:1000;stroke-dashoffset:1000}
-.tree-branch.grow{animation:branchDraw 2s ease forwards}
-.tree-leaf{fill:#ffd700;opacity:0}
-.tree-leaf.appear{animation:leafPop 0.5s ease forwards}
-@keyframes treeGrow{0%{opacity:0}100%{opacity:1}}
-@keyframes branchDraw{0%{stroke-dashoffset:1000}100%{stroke-dashoffset:0}}
+.tree-grow{position:absolute;bottom:0;left:0;right:0;height:45%;z-index:25;opacity:0}
+.tree-grow.grow{animation:treeAppear 1s 9s ease forwards}
+.tree-grow svg{width:100%;height:100%}
+.tg-branch{stroke:#c9a050;stroke-width:1.2;fill:none;stroke-dasharray:800;stroke-dashoffset:800}
+.tg-branch.draw{animation:lineDraw 2s ease forwards}
+.tg-leaf{fill:#c9a050;opacity:0}
+.tg-leaf.pop{animation:leafPop 0.4s ease forwards}
+@keyframes treeAppear{0%{opacity:0}100%{opacity:1}}
+@keyframes lineDraw{0%{stroke-dashoffset:800}100%{stroke-dashoffset:0}}
 @keyframes leafPop{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
 
-/* جزيئات */
-.epic-particles{position:fixed;inset:0;pointer-events:none;z-index:50}
-.epic-particle{position:absolute;border-radius:50%;pointer-events:none}
+.dust-particles{position:fixed;inset:0;pointer-events:none;z-index:30}
+.dust{position:absolute;width:2px;height:2px;background:#c9a050;border-radius:50%}
+.dust.fly{animation:dustFloat 3s ease-out forwards}
+@keyframes dustFloat{0%{opacity:0;transform:translateY(0) scale(0)}20%{opacity:0.8}100%{opacity:0;transform:translateY(-300px) scale(1.5)}}
 
-/* زر تخطي */
-.skip-btn{position:fixed;bottom:20px;z-index:20001;color:rgba(255,255,255,0.3);font-family:'Cairo';font-size:0.7rem;cursor:pointer;padding:5px 18px;border:1px solid rgba(255,255,255,0.1);border-radius:20px;background:rgba(0,0,0,0.6);opacity:0;left:50%;transform:translateX(-50%);transition:0.3s}
+.skip-btn{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:20001;color:rgba(255,255,255,0.3);font-family:'Cairo';font-size:0.7rem;cursor:pointer;padding:5px 18px;border:1px solid rgba(255,255,255,0.1);border-radius:20px;background:rgba(0,0,0,0.6);opacity:0;transition:0.3s}
 .skip-btn.on{opacity:1}
-.skip-btn:hover{color:#ffd700;border-color:#ffd700}
+.skip-btn:hover{color:#c9a050;border-color:#c9a050}
 
-/* ===== باقي التصميم ===== */
 body{font-family:'Cairo',sans-serif;background:#0d1117;overflow:hidden;height:100vh;color:#e0d5c0}
-.header-container{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;background:rgba(22,27,34,0.9);padding:5px 15px;border-radius:8px;border:1px solid rgba(212,165,116,0.3)}
+.header-container{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;background:rgba(22,27,34,0.9);padding:5px 15px;border-radius:8px;border:1px solid rgba(212,165,116,0.3);white-space:nowrap}
 .title-row{display:flex;align-items:center;gap:8px}
 .title-row h1{font-size:0.9rem;color:#f0d9b5;margin:0;font-weight:700}
 svg{width:100%;height:100vh;cursor:grab;display:block}
-.link{fill:none;stroke:rgba(201,160,80,0.3);stroke-width:1.5px}
+.link{fill:none;stroke:rgba(201,160,80,0.3);stroke-width:1.5px;transition:0.3s}
 .link.highlight{stroke:#ffd700!important;stroke-width:3px!important}
 .node-group text{font-size:10px;pointer-events:none;text-anchor:middle;font-weight:700}
 .bottombar{position:fixed;bottom:0;left:0;right:0;height:40px;background:#161b22;border-top:1px solid #d4a574;display:flex;justify-content:center;align-items:center;gap:6px;z-index:100;padding:2px}
-button{background:rgba(212,165,116,0.1);color:#d4a574;border:1px solid #d4a574;padding:4px 8px;border-radius:8px;cursor:pointer;font-family:'Cairo';font-size:0.65rem}
+button{background:rgba(212,165,116,0.1);color:#d4a574;border:1px solid #d4a574;padding:4px 8px;border-radius:8px;cursor:pointer;font-family:'Cairo';font-size:0.65rem;transition:0.3s}
 button:hover{background:rgba(212,165,116,0.2)}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:2000;display:none;justify-content:center;align-items:center;backdrop-filter:blur(10px)}
 .modal.on{display:flex}
 .modalbox{background:#1c2128;border:2px solid #d4a574;border-radius:20px;padding:20px;width:90%;max-width:500px;text-align:center;max-height:85vh;overflow-y:auto}
-.modalbox h2{color:#f0d9b5;margin-bottom:12px;font-size:1.1rem;border-bottom:1px solid #d4a574;padding-bottom:8px}
+.modalbox h2{color:#f0d9b5;font-size:1.1rem;border-bottom:1px solid #d4a574;padding-bottom:8px;margin-bottom:12px}
 .highlight-text{color:#d4a574;font-weight:700}
 input,select{width:100%;padding:8px;margin:6px 0;background:#0d1117;border:1px solid #d4a574;color:#fff;border-radius:8px;text-align:center;font-family:'Cairo';font-size:0.8rem}
 .identity-card{background:linear-gradient(135deg,#1a1a1a,#2a2a2a,#1a1a1a);border:6px solid #c9a050;border-radius:20px;padding:25px;box-shadow:0 0 40px rgba(0,0,0,0.8)}
@@ -138,65 +115,70 @@ body.light-theme .stamp-circle{border-color:#0D47A1;color:#0D47A1}
 </head>
 <body>
 
-<!-- ===== رسالة الترحيب (تظهر أولاً) ===== -->
 <div class="welcome-intro" id="welcomeIntro">
-    <div class="welcome-box">
-        <div class="falcons">🦅</div>
-        <h2>أهلاً بكم في شجرة الدراوشة</h2>
-        <p>عشيرة <span class="hl">العليان</span> - قبيلة <span class="hl">بني خالد</span><br><br>
-        مؤسس هذه الشجرة<br>
-        <span class="hl">👑 علي ابن ساير ابن ذياب ابن محمد ابن خليف الدرويش 👑</span><br><br>
-        حفظ الله نسبكم وبارك ذريتكم</p>
-        <button class="welcome-btn" id="enterBtn">🦅 دخول 🦅</button>
-    </div>
-</div>
+<div class="welcome-box">
+<div class="falcons">🦅</div>
+<h2>أهلاً بكم في شجرة الدراوشة</h2>
+<p>عشيرة <span class="hl">العليان</span> - قبيلة <span class="hl">بني خالد</span><br><br>
+مؤسس هذه الشجرة<br>
+<span class="hl">👑 علي ابن ساير ابن ذياب ابن محمد ابن خليف الدرويش 👑</span><br><br>
+حفظ الله نسبكم وبارك ذريتكم</p>
+<button class="welcome-btn" id="enterBtn">🦅 دخول 🦅</button>
+</div></div>
 
-<!-- ===== المشهد الأسطوري ===== -->
 <div class="epic-overlay" id="epicOverlay">
-    <div class="portal" id="portal"></div>
-    <div class="lightning-bolt" id="bolt1"></div>
-    <div class="lightning-bolt" id="bolt2"></div>
-    <div id="swarmContainer"></div>
-    <div class="liquid-gold" id="liquidTitle">عشيرة العليان</div>
-    <div class="liquid-sub" id="liquidSub">بني خالد</div>
-    <div class="blast" id="blast"></div>
-    <div class="sword left" id="swordL">⚔️</div>
-    <div class="sword right" id="swordR">⚔️</div>
-    <div class="founder-container" id="founderBox">
-        <div class="founder-crown">👑</div>
-        <div class="founder-name">درويش</div>
-    </div>
-    <div class="children-pillars" id="childrenPillars">
-        <div class="child-item"><div class="child-name">محيميد</div></div>
-        <div class="child-item"><div class="child-name">حميدو</div></div>
-        <div class="child-item"><div class="child-name">علوش</div></div>
-        <div class="child-item"><div class="child-name">خليف</div></div>
-    </div>
-    <div class="growing-tree" id="growingTree">
-        <svg class="tree-svg" viewBox="0 0 400 300">
-            <path class="tree-branch" d="M200 280 L200 200 L130 120 L100 70"/>
-            <path class="tree-branch" d="M200 280 L200 200 L270 120 L300 70"/>
-            <path class="tree-branch" d="M200 200 L160 160 L140 140"/>
-            <path class="tree-branch" d="M200 200 L240 160 L260 140"/>
-            <path class="tree-branch" d="M200 240 L170 220 L150 210"/>
-            <path class="tree-branch" d="M200 240 L230 220 L250 210"/>
-            <circle class="tree-leaf" cx="100" cy="70" r="6"/>
-            <circle class="tree-leaf" cx="300" cy="70" r="6"/>
-            <circle class="tree-leaf" cx="140" cy="140" r="5"/>
-            <circle class="tree-leaf" cx="260" cy="140" r="5"/>
-            <circle class="tree-leaf" cx="150" cy="210" r="4"/>
-            <circle class="tree-leaf" cx="250" cy="210" r="4"/>
-            <circle class="tree-leaf" cx="200" cy="180" r="5"/>
-            <circle class="tree-leaf" cx="170" cy="100" r="4"/>
-            <circle class="tree-leaf" cx="230" cy="100" r="4"/>
-        </svg>
-    </div>
+<div class="stars" id="stars"></div>
+<div class="crescent" id="crescent"></div>
+<div class="arabesque" id="arab">
+<div class="arab-inner"></div><div class="arab-inner2"></div>
+<div class="arab-dot" style="top:15px;left:50%"></div>
+<div class="arab-dot" style="bottom:15px;left:50%"></div>
+<div class="arab-dot" style="top:50%;left:15px"></div>
+<div class="arab-dot" style="top:50%;right:15px"></div>
 </div>
-<div class="epic-particles" id="epicParticles"></div>
+<div class="golden-text" id="goldTitle">عشيرة العليان</div>
+<div class="silver-text" id="silverSub">بني خالد - أهل الحميّة</div>
+<div class="founder-box" id="founderBox">
+<div class="founder-crown">👑</div>
+<div class="founder-name">درويش</div>
+</div>
+<div class="children-row" id="childrenRow">
+<div class="child-box"><div class="child-tag">محيميد</div></div>
+<div class="child-box"><div class="child-tag">حميدو</div></div>
+<div class="child-box"><div class="child-tag">علوش</div></div>
+<div class="child-box"><div class="child-tag">خليف</div></div>
+</div>
+<div class="tree-grow" id="treeGrow">
+<svg viewBox="0 0 400 250">
+<line class="tg-branch" x1="200" y1="230" x2="200" y2="160"/>
+<line class="tg-branch" x1="200" y1="160" x2="130" y2="100"/>
+<line class="tg-branch" x1="200" y1="160" x2="270" y2="100"/>
+<line class="tg-branch" x1="200" y1="160" x2="155" y2="130"/>
+<line class="tg-branch" x1="200" y1="160" x2="245" y2="130"/>
+<line class="tg-branch" x1="200" y1="190" x2="170" y2="170"/>
+<line class="tg-branch" x1="200" y1="190" x2="230" y2="170"/>
+<line class="tg-branch" x1="130" y1="100" x2="105" y2="70"/>
+<line class="tg-branch" x1="130" y1="100" x2="145" y2="75"/>
+<line class="tg-branch" x1="270" y1="100" x2="255" y2="70"/>
+<line class="tg-branch" x1="270" y1="100" x2="295" y2="75"/>
+<circle class="tg-leaf" cx="200" cy="160" r="5"/>
+<circle class="tg-leaf" cx="130" cy="100" r="5"/>
+<circle class="tg-leaf" cx="270" cy="100" r="5"/>
+<circle class="tg-leaf" cx="105" cy="70" r="4"/>
+<circle class="tg-leaf" cx="145" cy="75" r="4"/>
+<circle class="tg-leaf" cx="155" cy="130" r="4"/>
+<circle class="tg-leaf" cx="245" cy="130" r="4"/>
+<circle class="tg-leaf" cx="255" cy="70" r="4"/>
+<circle class="tg-leaf" cx="295" cy="75" r="4"/>
+<circle class="tg-leaf" cx="170" cy="170" r="4"/>
+<circle class="tg-leaf" cx="230" cy="170" r="4"/>
+</svg>
+</div>
+</div>
+<div class="dust-particles" id="dustParticles"></div>
 <button class="skip-btn" id="skipBtn">تخطي ⏭</button>
 
-<!-- ===== باقي الواجهات ===== -->
-<div class="modal" id="aboutModal"><div class="modalbox"><h2>نبذة</h2><p>عشيرة <span class="highlight-text">العليان</span> من قبيلة <span class="highlight-text">بني خالد</span> العريقة.</p><button id="closeAboutBtn">إغلاق</button></div></div>
+<div class="modal" id="aboutModal"><div class="modalbox" style="text-align:right;"><h2 style="text-align:center;">نبذة</h2><p>عشيرة <span class="highlight-text">العليان</span> من قبيلة <span class="highlight-text">بني خالد</span> العريقة.</p><button id="closeAboutBtn">إغلاق</button></div></div>
 <div class="modal" id="adminModal"><div class="modalbox"><h2 id="nodeNameTitle">تعديل</h2><input id="newNameInput" placeholder="الاسم"><input id="birthInput" placeholder="الميلاد"><select id="statusSelect"><option value="alive">حي</option><option value="deceased">متوفي</option></select><button id="updateNodeBtn" style="background:#d4a574;color:#000;">حفظ</button><input id="childNameInput" placeholder="اسم ابن"><input id="childBirthInput" placeholder="الميلاد"><button id="addChildBtn" style="background:#238636;color:white;">إضافة</button><button id="deleteNodeBtn" style="background:#da3633;color:white;">حذف</button><button id="closeAdminBtn">إلغاء</button></div></div>
 <div class="modal" id="loginModal"><div class="modalbox"><h2>تسجيل الدخول</h2><input type="password" id="passCode" placeholder="كلمة المرور"><button id="confirmLoginBtn">دخول</button></div></div>
 <div class="modal" id="statsModal"><div class="modalbox"><h2>📊 معلومات</h2><div id="statsContent"></div><button id="closeStatsBtn">إغلاق</button></div></div>
@@ -207,69 +189,41 @@ body.light-theme .stamp-circle{border-color:#0D47A1;color:#0D47A1}
 <div class="bottombar"><button id="loginBtn">🔐 تسجيل الدخول</button><button id="saveBtn" style="display:none;background:#238636;color:white;">💾 حفظ</button><button id="pdfBtn">📄 PDF</button><button id="statsBtn">📊 معلومات</button><button id="themeBtn">☀️ نهاري</button></div>
 
 <script>
-// ===== رسالة الترحيب =====
 document.getElementById('enterBtn').addEventListener('click',function(){
-    document.getElementById('welcomeIntro').style.display='none';
-    startEpic();
+document.getElementById('welcomeIntro').style.display='none';
+var ov=document.getElementById('epicOverlay');ov.classList.add('on');
+var skip=document.getElementById('skipBtn');skip.classList.add('on');
+var dust=document.getElementById('dustParticles');
+
+// نجوم
+var sc=document.getElementById('stars');
+for(var i=0;i<80;i++){var s=document.createElement('div');s.className='star';s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+(1+Math.random()*2)+'px;height:'+s.style.width+';animation-delay:'+Math.random()*3+'s';sc.appendChild(s)}
+
+// غبار ذهبي
+function dustBurst(n,d){setTimeout(function(){for(var i=0;i<n;i++){var p=document.createElement('div');p.className='dust fly';p.style.cssText='left:50%;top:50%;animation-delay:'+Math.random()*2+'s;transform:translate('+(Math.random()-0.5)*200+'px,'+(Math.random()-0.5)*200+'px)';dust.appendChild(p);setTimeout(function(){p.remove()},3000)}},d)}
+
+// تسلسل المشهد
+setTimeout(function(){document.getElementById('crescent').classList.add('rise')},300);
+setTimeout(function(){document.getElementById('arab').classList.add('show')},800);
+dustBurst(20,1000);
+setTimeout(function(){document.getElementById('goldTitle').classList.add('write')},2000);
+setTimeout(function(){document.getElementById('silverSub').classList.add('fade')},3000);
+setTimeout(function(){document.getElementById('founderBox').classList.add('reveal')},5000);
+dustBurst(30,5500);
+setTimeout(function(){document.getElementById('childrenRow').classList.add('show')},7000);
+setTimeout(function(){
+var tg=document.getElementById('treeGrow');tg.classList.add('grow');
+var br=tg.querySelectorAll('.tg-branch');br.forEach(function(b,i){setTimeout(function(){b.classList.add('draw')},i*250)});
+var lf=tg.querySelectorAll('.tg-leaf');lf.forEach(function(l,i){setTimeout(function(){l.classList.add('pop')},1500+i*80)});
+dustBurst(40,500)
+},8500);
+
+function end(){ov.classList.add('fade-out');skip.classList.remove('on');dust.innerHTML='';setTimeout(function(){ov.classList.remove('on','fade-out');render()},1000)}
+setTimeout(end,12500);
+skip.addEventListener('click',end);
 });
 
-// ===== المشهد الأسطوري =====
-function startEpic(){
-    var ov=document.getElementById('epicOverlay');ov.classList.add('on');
-    var skip=document.getElementById('skipBtn');skip.classList.add('on');
-    var particles=document.getElementById('epicParticles');
-    
-    // جزيئات
-    function spawnParticles(n,delay){
-        setTimeout(function(){
-            for(var i=0;i<n;i++){var p=document.createElement('div');p.className='epic-particle';p.style.cssText='left:50%;top:50%;width:'+(1+Math.random()*4)+'px;height:'+p.style.width+';background:hsl('+(30+Math.random()*30)+',100%,'+(50+Math.random()*50)+'%);border-radius:50%;position:absolute;animation:particleBurst '+(1+Math.random()*2)+'s ease-out forwards;--px:'+(Math.random()-0.5)*500+'px;--py:'+(Math.random()-0.5)*500+'px;';particles.appendChild(p)}
-        },delay)
-    }
-    // انيميشن الجزيئات
-    var styleEl=document.createElement('style');
-    styleEl.textContent='@keyframes particleBurst{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(0)}}';
-    document.head.appendChild(styleEl);
-    
-    // 0.0s: بوابة
-    setTimeout(function(){document.getElementById('portal').classList.add('appear')},100);
-    // 0.5s: برق
-    setTimeout(function(){var b1=document.getElementById('bolt1');b1.style.left='35%';b1.style.top='-10%';b1.style.height='40%';b1.style.transform='rotate(-8deg)';b1.classList.add('strike');
-        var b2=document.getElementById('bolt2');b2.style.left='60%';b2.style.top='-10%';b2.style.height='50%';b2.style.transform='rotate(5deg)';b2.classList.add('strike')
-    },600);
-    // 1s: صقور
-    setTimeout(function(){
-        var sc=document.getElementById('swarmContainer');
-        for(var i=0;i<5;i++){var f=document.createElement('span');f.className='falcon-swarm';f.textContent='🦅';f.style.left=(20+i*15)+'%';f.style.top=(30+i*8)+'%';f.style.setProperty('--tx',(Math.random()-0.5)*100+'px');f.style.setProperty('--ty',(Math.random()-0.5)*100+'px');f.style.animationDelay=(i*0.2)+'s';f.classList.add('fly');sc.appendChild(f)}
-        setTimeout(function(){sc.innerHTML=''},2200)
-    },1000);
-    // 2.5s: ذهب سائل
-    setTimeout(function(){document.getElementById('liquidTitle').classList.add('flow');document.getElementById('liquidSub').classList.add('flow')},2500);
-    // 3.5s: انفجار
-    setTimeout(function(){document.getElementById('blast').classList.add('boom');spawnParticles(60,0)},3500);
-    // 4s: سيوف
-    setTimeout(function(){document.getElementById('swordL').classList.add('drop');document.getElementById('swordR').classList.add('drop')},4000);
-    // 4.5s: درويش
-    setTimeout(function(){document.getElementById('founderBox').classList.add('reveal');spawnParticles(40,0)},4500);
-    // 6s: إخفاء السيوف والبوابة
-    setTimeout(function(){document.getElementById('portal').style.opacity='0';document.getElementById('swordL').style.opacity='0';document.getElementById('swordR').style.opacity='0'},6000);
-    // 6.5s: الأبناء
-    setTimeout(function(){document.getElementById('childrenPillars').classList.add('show')},6500);
-    // 8s: نمو الشجرة
-    setTimeout(function(){var gt=document.getElementById('growingTree');gt.classList.add('grow');
-        var branches=gt.querySelectorAll('.tree-branch');branches.forEach(function(b,i){setTimeout(function(){b.classList.add('grow')},i*300)});
-        var leaves=gt.querySelectorAll('.tree-leaf');leaves.forEach(function(l,i){setTimeout(function(){l.classList.add('appear')},1500+i*100)});
-        spawnParticles(30,0)
-    },8000);
-    // 10s: جزيئات إضافية
-    setTimeout(function(){spawnParticles(50,0)},10000);
-    
-    // النهاية
-    function endEpic(){ov.classList.add('fade-out');skip.classList.remove('on');particles.innerHTML='';setTimeout(function(){ov.classList.remove('on','fade-out');render()},800)}
-    setTimeout(endEpic,13000);
-    skip.addEventListener('click',endEpic);
-}
-
-// ===== الشجرة (نفس الكود بدون تغيير) =====
+// ===== الشجرة =====
 var familyData=window.familyData,isAdmin=false,selectedNode=null,highlightedPathIds=[],isLight=false,currentYear=2025,rootNode=null;
 var svg=d3.select("#treeSvg"),width=window.innerWidth,height=window.innerHeight,g=svg.append("g");
 svg.call(d3.zoom().scaleExtent([0.1,3]).on("zoom",function(e){g.attr("transform",e.transform)}));
@@ -289,7 +243,6 @@ function saveChanges(){var j=JSON.stringify(familyData,null,2);var a=document.cr
 function printPDF(){var h=document.querySelector('.header-container');h.style.display='none';document.querySelector('.bottombar').style.display='none';window.print();h.style.display='';document.querySelector('.bottombar').style.display=''}
 function toggleTheme(){isLight=!isLight;document.body.classList.toggle("light-theme");document.getElementById("themeBtn").textContent=isLight?"🌙 ليلي":"☀️ نهاري"}
 
-// ===== الأزرار =====
 document.getElementById("closeAboutBtn").addEventListener("click",function(){closeModal('aboutModal')});
 document.getElementById("closeAdminBtn").addEventListener("click",function(){closeModal('adminModal')});
 document.getElementById("closeStatsBtn").addEventListener("click",function(){closeModal('statsModal')});
