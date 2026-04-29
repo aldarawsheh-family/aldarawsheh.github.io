@@ -2,93 +2,115 @@
 <html lang="ar" dir="rtl"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>شجرة الدراوشة</title>
-<meta name="description" content="شجرة عائلة الدراوشة - شجرة الدرواشة - عشيرة العليان - بني خالد">
-<meta name="keywords" content="شجرة الدراوشة, الدرواشة, شجرة الدرويش, عائلة الدريويش, دراوشة, الدروشة, شجرة العائلة">
+<title>شجرة الدراوشة | عشيرة العليان</title>
+<meta name="description" content="شجرة عائلة الدراوشة - الدرواشة - عشيرة العليان - بني خالد">
+<meta name="keywords" content="شجرة الدراوشة, الدرواشة, الدرويش, دراوشة, عشيرة العليان, بني خالد">
 <meta name="robots" content="index, follow">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="data.js"></script>
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
-/* ========== مشهد البداية الأسطوري ========== */
-.intro-overlay {
-    position: fixed;inset:0;z-index:10000;
-    background:#000;
-    display:flex;flex-direction:column;justify-content:center;align-items:center;
-    overflow:hidden;
-    transition:opacity 1s ease;
-    opacity:1;
-}
-.intro-overlay.fade-out{opacity:0;pointer-events:none}
+/* ===== رسالة الترحيب ===== */
+.welcome-intro{position:fixed;inset:0;z-index:20000;background:rgba(0,0,0,0.95);display:flex;justify-content:center;align-items:center;backdrop-filter:blur(10px)}
+.welcome-box{background:linear-gradient(135deg,#1a1206,#2d1f0a,#1a1206);border:2px solid #c9a050;border-radius:20px;padding:25px 20px;text-align:center;max-width:380px;width:90%;box-shadow:0 0 60px rgba(201,160,80,0.3)}
+.welcome-box .falcons{font-size:2rem}
+.welcome-box h2{font-family:'Amiri',serif;color:#f0d9b5;font-size:1.3rem;margin:10px 0}
+.welcome-box p{color:#ddd;font-size:0.8rem;line-height:1.6;margin-bottom:15px}
+.welcome-box .hl{color:#c9a050;font-weight:700}
+.welcome-btn{background:linear-gradient(135deg,#8b6914,#c9a050);color:#000;border:none;padding:12px 40px;border-radius:30px;font-family:'Cairo';font-weight:700;font-size:1rem;cursor:pointer;box-shadow:0 0 30px rgba(201,160,80,0.4);transition:0.3s}
+.welcome-btn:active{transform:scale(0.95)}
+
+/* ===== المشهد الأسطوري ===== */
+.epic-overlay{position:fixed;inset:0;z-index:10000;background:radial-gradient(ellipse at center,#0a0a0a 0%,#000 100%);display:none;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;opacity:1;transition:opacity 0.8s}
+.epic-overlay.on{display:flex}
+.epic-overlay.fade-out{opacity:0;pointer-events:none}
+
+/* بوابة كونية */
+.portal{position:absolute;width:250px;height:250px;border-radius:50%;background:conic-gradient(from 0deg,#000,#1a0a00,#c9a050,#000,#3d1f08,#c9a050,#000);animation:portalSpin 3s linear infinite;box-shadow:0 0 80px rgba(201,160,80,0.5),0 0 150px rgba(0,0,0,0.8) inset;opacity:0}
+.portal.appear{animation:portalIn 1s ease forwards,portalSpin 3s linear infinite}
+@keyframes portalSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes portalIn{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
 
 /* برق */
-.lightning{position:absolute;width:3px;background:linear-gradient(to bottom,transparent,#fff,#ffd700,#fff,transparent);box-shadow:0 0 30px #ffd700,0 0 80px #fff;animation:lightningStrike 0.15s ease-out forwards;z-index:2;border-radius:50% 50% 0 0;opacity:0}
-.lightning:nth-child(1){left:30%;top:-10%;height:40%;transform:rotate(-5deg);animation-delay:0.2s}
-.lightning:nth-child(2){left:60%;top:-10%;height:50%;transform:rotate(8deg);animation-delay:0.5s}
-.lightning:nth-child(3){left:80%;top:-10%;height:35%;transform:rotate(-3deg);animation-delay:0.8s}
-@keyframes lightningStrike{0%{opacity:0}10%{opacity:1}20%{opacity:0.3}30%{opacity:1}40%{opacity:0.6}50%{opacity:1}60%{opacity:0}100%{opacity:0}}
+.lightning-bolt{position:absolute;width:3px;background:linear-gradient(to bottom,transparent,#fff,#ffd700,#fff,transparent);border-radius:3px;opacity:0;z-index:5;box-shadow:0 0 40px #ffd700,0 0 80px #fff}
+.lightning-bolt.strike{animation:boltStrike 0.3s ease-out forwards}
+@keyframes boltStrike{0%{opacity:0}15%{opacity:1}30%{opacity:0.4}45%{opacity:1}60%{opacity:0.7}75%{opacity:1}100%{opacity:0}}
 
-/* صقر */
-.falcon-epic{position:absolute;font-size:8rem;z-index:5;animation:falconEpicFly 2.5s 0.3s ease-in-out forwards;opacity:0;filter:drop-shadow(0 0 40px #ffd700)}
-@keyframes falconEpicFly{0%{opacity:0;right:-20%;top:30%;transform:scale(0.5) rotate(-20deg)}20%{opacity:1}80%{opacity:1}100%{opacity:0;left:-20%;top:10%;transform:scale(1.2) rotate(5deg)}}
+/* الصقور */
+.falcon-swarm{position:absolute;font-size:3rem;opacity:0;filter:drop-shadow(0 0 30px #ffd700);pointer-events:none;z-index:10}
+.falcon-swarm.fly{animation:swarmFly 2s ease-in-out forwards}
+@keyframes swarmFly{0%{opacity:0;transform:translate(0,0) scale(0.3)}30%{opacity:1}100%{opacity:1;transform:translate(var(--tx),var(--ty)) scale(1)}}
 
-/* نار عشيرة العليان */
-.fire-title-container{position:relative;z-index:10;text-align:center;opacity:0;animation:fireAppear 0.5s 1.8s ease forwards}
-.fire-title{font-family:'Cairo',sans-serif;font-size:5rem;font-weight:900;color:#ffaa00;text-shadow:0 0 40px #ff6600,0 0 80px #ff4500,0 0 120px #ff8c00,0 0 200px #ffd700,0 0 10px #000;letter-spacing:8px;animation:fireFlicker 0.15s 2s ease-in-out infinite}
-.fire-subtitle{font-family:'Amiri',serif;font-size:2rem;color:#ffd700;text-shadow:0 0 30px #ffaa00,0 0 60px #ff6600;margin-top:5px;letter-spacing:4px}
-@keyframes fireAppear{0%{opacity:0;transform:scale(3)}100%{opacity:1;transform:scale(1)}}
-@keyframes fireFlicker{0%,100%{text-shadow:0 0 40px #ff6600,0 0 80px #ff4500,0 0 120px #ff8c00,0 0 200px #ffd700}50%{text-shadow:0 0 60px #ff8c00,0 0 120px #ff6600,0 0 180px #ffaa00,0 0 250px #ffd700}}
+/* ذهب سائل */
+.liquid-gold{font-family:'Cairo',sans-serif;font-size:3rem;font-weight:900;background:linear-gradient(to bottom,#ffd700,#ff8c00,#ffd700,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px #ff8c00);opacity:0;z-index:20;position:relative;text-align:center}
+.liquid-gold.flow{animation:goldFlow 1.5s ease forwards}
+@keyframes goldFlow{0%{opacity:0;transform:translateY(-60px);filter:drop-shadow(0 0 0px #ff8c00)}50%{opacity:1}100%{opacity:1;transform:translateY(0);filter:drop-shadow(0 0 40px #ffd700)}}
+.liquid-sub{font-family:'Amiri',serif;font-size:1.4rem;color:#c9a050;opacity:0;text-align:center;z-index:20}
+.liquid-sub.flow{animation:goldFlow 1.5s 0.3s ease forwards}
 
 /* انفجار */
-.explosion{position:absolute;width:100%;height:100%;z-index:15;pointer-events:none;opacity:0;animation:explode 0.8s 3.8s ease-out forwards}
-.explosion::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:0;height:0;background:radial-gradient(circle,#fff,#ffd700,transparent);border-radius:50%;animation:explodeBurst 0.8s 3.8s ease-out forwards}
-@keyframes explode{0%,90%{opacity:0}91%{opacity:1}100%{opacity:0}}
-@keyframes explodeBurst{0%{width:0;height:0;opacity:1}100%{width:200vmax;height:200vmax;opacity:0}}
+.blast{position:absolute;width:10px;height:10px;background:#fff;border-radius:50%;box-shadow:0 0 100px #fff,0 0 200px #ffd700,0 0 400px #ff8c00;z-index:30;opacity:0}
+.blast.boom{animation:blastBoom 1.2s ease-out forwards}
+@keyframes blastBoom{0%{opacity:0;transform:scale(1)}30%{opacity:1;transform:scale(80)}100%{opacity:0;transform:scale(150)}}
+
+/* سيوف */
+.sword{position:absolute;font-size:5rem;opacity:0;z-index:25;filter:drop-shadow(0 0 30px rgba(201,160,80,0.8))}
+.sword.left{transform:rotate(35deg);left:25%}
+.sword.right{transform:rotate(-35deg);right:25%}
+.sword.drop{animation:swordDrop 0.8s ease forwards}
+@keyframes swordDrop{0%{opacity:0;transform:translateY(-300px) rotate(0deg)}60%{opacity:1;transform:translateY(10px) rotate(var(--rot))}80%{transform:translateY(-5px) rotate(var(--rot))}100%{opacity:1;transform:translateY(0) rotate(var(--rot))}}
 
 /* درويش */
-.founder-epic{position:relative;z-index:20;text-align:center;opacity:0;animation:founderEpicIn 1.5s 4.3s ease forwards}
-.founder-name-epic{font-family:'Cairo',sans-serif;font-size:7rem;font-weight:900;color:#ffd700;text-shadow:0 0 60px #ffd700,0 0 120px #ffaa00,0 0 200px #ff8c00,0 0 300px #ff6600,0 0 20px #000;letter-spacing:15px;animation:founderPulseEpic 2s 4.5s ease-in-out infinite}
-.founder-crown{font-size:4rem;animation:crownBounce 0.6s 5s ease-in-out infinite}
-@keyframes founderEpicIn{0%{opacity:0;transform:scale(5) rotateY(180deg)}60%{opacity:1;transform:scale(0.9) rotateY(-10deg)}100%{opacity:1;transform:scale(1) rotateY(0)}}
-@keyframes founderPulseEpic{0%,100%{text-shadow:0 0 60px #ffd700,0 0 120px #ffaa00,0 0 200px #ff8c00}50%{text-shadow:0 0 100px #fff,0 0 180px #ffd700,0 0 280px #ffaa00,0 0 400px #ff6600}}
-@keyframes crownBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+.founder-container{position:relative;z-index:35;text-align:center;opacity:0}
+.founder-container.reveal{animation:founderReveal 1.2s ease forwards}
+.founder-name{font-family:'Cairo',sans-serif;font-size:4.5rem;font-weight:900;color:#ffd700;text-shadow:0 0 50px #ffaa00,0 0 100px #ff8c00,0 0 200px #ff6600,0 0 20px #000;letter-spacing:10px}
+.founder-crown{font-size:2.5rem;animation:crownFloat 2s ease-in-out infinite}
+@keyframes founderReveal{0%{opacity:0;transform:scale(4)}70%{opacity:1;transform:scale(0.9)}100%{opacity:1;transform:scale(1)}}
+@keyframes crownFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
 
 /* أعمدة الأبناء */
-.pillars{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);display:flex;gap:30px;z-index:25;opacity:0;animation:pillarsAppear 1s 6.5s ease forwards}
-.pillar{text-align:center;position:relative}
-.pillar::before{content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:3px;height:120px;background:linear-gradient(to bottom,#ffd700,rgba(255,215,0,0.3));box-shadow:0 0 30px #ffd700,0 0 60px #ffaa00;animation:pillarGlow 2s 7s ease-in-out infinite}
-.pillar-name{font-family:'Cairo',sans-serif;font-size:1.6rem;font-weight:700;color:#ffd700;text-shadow:0 0 30px rgba(255,215,0,0.8);padding:12px 20px;border:2px solid rgba(255,215,0,0.4);border-radius:10px;background:rgba(0,0,0,0.7);animation:pillarPulse 2s 7s ease-in-out infinite}
-.pillar:nth-child(2) .pillar-name{animation-delay:0.3s}
-.pillar:nth-child(3) .pillar-name{animation-delay:0.6s}
-.pillar:nth-child(4) .pillar-name{animation-delay:0.9s}
-@keyframes pillarsAppear{0%{opacity:0;bottom:0}100%{opacity:1;bottom:8%}}
-@keyframes pillarGlow{0%,100%{box-shadow:0 0 30px #ffd700,0 0 60px #ffaa00}50%{box-shadow:0 0 60px #fff,0 0 100px #ffd700,0 0 150px #ffaa00}}
-@keyframes pillarPulse{0%,100%{box-shadow:0 0 20px rgba(255,215,0,0.4);border-color:rgba(255,215,0,0.4)}50%{box-shadow:0 0 50px rgba(255,215,0,0.9);border-color:#ffd700}}
+.children-pillars{position:absolute;bottom:12%;display:flex;gap:25px;z-index:40;opacity:0;justify-content:center;width:100%}
+.children-pillars.show{animation:pillarsUp 1s ease forwards}
+.child-item{text-align:center;position:relative}
+.child-item::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:2px;height:100px;background:linear-gradient(to bottom,#ffd700,transparent);box-shadow:0 0 20px #ffd700;animation:pillarBeam 1.5s ease-in-out infinite}
+.child-name{font-family:'Cairo',sans-serif;font-size:1.2rem;font-weight:700;color:#ffd700;text-shadow:0 0 20px rgba(255,215,0,0.6);background:rgba(0,0,0,0.8);padding:8px 16px;border:1px solid rgba(255,215,0,0.3);border-radius:8px}
+@keyframes pillarsUp{0%{opacity:0;bottom:0}100%{opacity:1;bottom:12%}}
+@keyframes pillarBeam{0%,100%{box-shadow:0 0 20px #ffd700}50%{box-shadow:0 0 40px #fff,0 0 60px #ffd700}}
+
+/* نمو الشجرة */
+.growing-tree{position:absolute;bottom:0;left:0;right:0;height:50%;z-index:45;opacity:0}
+.growing-tree.grow{animation:treeGrow 3s ease forwards}
+.tree-svg{width:100%;height:100%}
+.tree-branch{stroke:#c9a050;stroke-width:1.5;fill:none;stroke-dasharray:1000;stroke-dashoffset:1000}
+.tree-branch.grow{animation:branchDraw 2s ease forwards}
+.tree-leaf{fill:#ffd700;opacity:0}
+.tree-leaf.appear{animation:leafPop 0.5s ease forwards}
+@keyframes treeGrow{0%{opacity:0}100%{opacity:1}}
+@keyframes branchDraw{0%{stroke-dashoffset:1000}100%{stroke-dashoffset:0}}
+@keyframes leafPop{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
 
 /* جزيئات */
-.particles-epic{position:fixed;inset:0;pointer-events:none;z-index:30}
-.particle-epic{position:absolute;border-radius:50%;animation:particleFly 3s ease-out forwards}
-@keyframes particleFly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(0)}}
+.epic-particles{position:fixed;inset:0;pointer-events:none;z-index:50}
+.epic-particle{position:absolute;border-radius:50%;pointer-events:none}
 
-/* زر التخطي */
-.skip-btn{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:10001;color:rgba(255,255,255,0.4);font-family:'Cairo',sans-serif;font-size:0.75rem;cursor:pointer;padding:5px 18px;border:1px solid rgba(255,255,255,0.15);border-radius:20px;background:rgba(0,0,0,0.5);opacity:0;animation:fadeIn 0.5s 1s ease forwards;transition:all 0.3s}
-.skip-btn:hover{color:#ffd700;border-color:#ffd700;background:rgba(0,0,0,0.8)}
-@keyframes fadeIn{0%{opacity:0}100%{opacity:1}}
+/* زر تخطي */
+.skip-btn{position:fixed;bottom:20px;z-index:20001;color:rgba(255,255,255,0.3);font-family:'Cairo';font-size:0.7rem;cursor:pointer;padding:5px 18px;border:1px solid rgba(255,255,255,0.1);border-radius:20px;background:rgba(0,0,0,0.6);opacity:0;left:50%;transform:translateX(-50%);transition:0.3s}
+.skip-btn.on{opacity:1}
+.skip-btn:hover{color:#ffd700;border-color:#ffd700}
 
-/* ========== باقي التصميم (نفسه) ========== */
-body{font-family:'Cairo',sans-serif;background:#0d1117;overflow:hidden;height:100vh;color:#e0d5c0;transition:all 0.5s ease}
-.header-container{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;text-align:center;cursor:pointer;background:rgba(22,27,34,0.9);padding:5px 15px;border-radius:8px;border:1px solid rgba(212,165,116,0.3)}
-.title-row{display:flex;align-items:center;justify-content:center;gap:8px}
+/* ===== باقي التصميم ===== */
+body{font-family:'Cairo',sans-serif;background:#0d1117;overflow:hidden;height:100vh;color:#e0d5c0}
+.header-container{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;background:rgba(22,27,34,0.9);padding:5px 15px;border-radius:8px;border:1px solid rgba(212,165,116,0.3)}
+.title-row{display:flex;align-items:center;gap:8px}
 .title-row h1{font-size:0.9rem;color:#f0d9b5;margin:0;font-weight:700}
 svg{width:100%;height:100vh;cursor:grab;display:block}
-.link{fill:none;stroke:rgba(201,160,80,0.3);stroke-width:1.5px;transition:all 0.3s ease}
+.link{fill:none;stroke:rgba(201,160,80,0.3);stroke-width:1.5px}
 .link.highlight{stroke:#ffd700!important;stroke-width:3px!important}
 .node-group text{font-size:10px;pointer-events:none;text-anchor:middle;font-weight:700}
-.bottombar{position:fixed;bottom:0;left:0;right:0;height:40px;background:#161b22;border-top:1px solid #d4a574;display:flex;justify-content:center;align-items:center;gap:6px;z-index:100;flex-wrap:wrap;padding:2px}
+.bottombar{position:fixed;bottom:0;left:0;right:0;height:40px;background:#161b22;border-top:1px solid #d4a574;display:flex;justify-content:center;align-items:center;gap:6px;z-index:100;padding:2px}
 button{background:rgba(212,165,116,0.1);color:#d4a574;border:1px solid #d4a574;padding:4px 8px;border-radius:8px;cursor:pointer;font-family:'Cairo';font-size:0.65rem}
 button:hover{background:rgba(212,165,116,0.2)}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:2000;display:none;justify-content:center;align-items:center;backdrop-filter:blur(10px)}
@@ -97,16 +119,16 @@ button:hover{background:rgba(212,165,116,0.2)}
 .modalbox h2{color:#f0d9b5;margin-bottom:12px;font-size:1.1rem;border-bottom:1px solid #d4a574;padding-bottom:8px}
 .highlight-text{color:#d4a574;font-weight:700}
 input,select{width:100%;padding:8px;margin:6px 0;background:#0d1117;border:1px solid #d4a574;color:#fff;border-radius:8px;text-align:center;font-family:'Cairo';font-size:0.8rem}
-.identity-card{background:linear-gradient(135deg,#1a1a1a 0%,#2a2a2a 50%,#1a1a1a 100%);border:6px solid #c9a050;border-radius:20px;padding:25px;box-shadow:0 0 40px rgba(0,0,0,0.8)}
+.identity-card{background:linear-gradient(135deg,#1a1a1a,#2a2a2a,#1a1a1a);border:6px solid #c9a050;border-radius:20px;padding:25px;box-shadow:0 0 40px rgba(0,0,0,0.8)}
 .id-header{text-align:center;margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid #c9a050}
-.id-falcons{font-size:1.5rem;letter-spacing:5px}
+.id-falcons{font-size:1.5rem}
 .id-title{font-family:'Amiri',serif;font-size:1.1rem;color:#c9a050;font-weight:700}
-.id-number{display:block;text-align:center;font-family:'Amiri',serif;font-size:1.3rem;color:#c9a050;font-weight:bold;margin:10px 0}
+.id-number{font-family:'Amiri',serif;font-size:1.3rem;color:#c9a050;font-weight:bold;margin:10px 0;text-align:center}
 .id-info-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dotted #555;font-size:0.7rem}
 .id-info-label{color:#c9a050;font-weight:700}
 .id-info-value{color:#ddd}
 .id-stamp{display:flex;justify-content:center;margin:15px 0}
-.stamp-circle{width:70px;height:70px;border-radius:50%;border:3px solid #1565C0;background:rgba(21,101,192,0.05);display:flex;align-items:center;justify-content:center;text-align:center;font-size:0.5rem;color:#1565C0;font-weight:900;transform:rotate(-5deg);box-shadow:0 0 20px rgba(21,101,192,0.3)}
+.stamp-circle{width:70px;height:70px;border-radius:50%;border:3px solid #1565C0;background:rgba(21,101,192,0.05);display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:#1565C0;font-weight:900;transform:rotate(-5deg);box-shadow:0 0 20px rgba(21,101,192,0.3)}
 .id-note{font-size:0.5rem;color:#777;text-align:center;margin-top:10px;padding-top:8px;border-top:1px solid #444}
 body.light-theme{background:#f5f0e8;color:#3a2a1a}
 body.light-theme .modalbox{background:#fff8f0;border-color:#8b6914}
@@ -116,147 +138,176 @@ body.light-theme .stamp-circle{border-color:#0D47A1;color:#0D47A1}
 </head>
 <body>
 
-<!-- ========== المشهد الأسطوري ========== -->
-<div class="intro-overlay" id="introOverlay">
-    <div class="lightning"></div>
-    <div class="lightning"></div>
-    <div class="lightning"></div>
-    <div class="falcon-epic">🦅</div>
-    
-    <div class="fire-title-container" id="fireTitle">
-        <div class="fire-title">عشيرة العليان</div>
-        <div class="fire-subtitle">بني خالد</div>
-    </div>
-    
-    <div class="explosion"></div>
-    
-    <div class="founder-epic" id="founderEpic">
-        <div class="founder-crown">👑</div>
-        <div class="founder-name-epic">درويش</div>
-    </div>
-    
-    <div class="pillars" id="pillars">
-        <div class="pillar"><div class="pillar-name">محيميد</div></div>
-        <div class="pillar"><div class="pillar-name">حميدو</div></div>
-        <div class="pillar"><div class="pillar-name">علوش</div></div>
-        <div class="pillar"><div class="pillar-name">خليف</div></div>
+<!-- ===== رسالة الترحيب (تظهر أولاً) ===== -->
+<div class="welcome-intro" id="welcomeIntro">
+    <div class="welcome-box">
+        <div class="falcons">🦅</div>
+        <h2>أهلاً بكم في شجرة الدراوشة</h2>
+        <p>عشيرة <span class="hl">العليان</span> - قبيلة <span class="hl">بني خالد</span><br><br>
+        مؤسس هذه الشجرة<br>
+        <span class="hl">👑 علي ابن ساير ابن ذياب ابن محمد ابن خليف الدرويش 👑</span><br><br>
+        حفظ الله نسبكم وبارك ذريتكم</p>
+        <button class="welcome-btn" id="enterBtn">🦅 دخول 🦅</button>
     </div>
 </div>
 
-<div class="particles-epic" id="particlesEpic"></div>
+<!-- ===== المشهد الأسطوري ===== -->
+<div class="epic-overlay" id="epicOverlay">
+    <div class="portal" id="portal"></div>
+    <div class="lightning-bolt" id="bolt1"></div>
+    <div class="lightning-bolt" id="bolt2"></div>
+    <div id="swarmContainer"></div>
+    <div class="liquid-gold" id="liquidTitle">عشيرة العليان</div>
+    <div class="liquid-sub" id="liquidSub">بني خالد</div>
+    <div class="blast" id="blast"></div>
+    <div class="sword left" id="swordL">⚔️</div>
+    <div class="sword right" id="swordR">⚔️</div>
+    <div class="founder-container" id="founderBox">
+        <div class="founder-crown">👑</div>
+        <div class="founder-name">درويش</div>
+    </div>
+    <div class="children-pillars" id="childrenPillars">
+        <div class="child-item"><div class="child-name">محيميد</div></div>
+        <div class="child-item"><div class="child-name">حميدو</div></div>
+        <div class="child-item"><div class="child-name">علوش</div></div>
+        <div class="child-item"><div class="child-name">خليف</div></div>
+    </div>
+    <div class="growing-tree" id="growingTree">
+        <svg class="tree-svg" viewBox="0 0 400 300">
+            <path class="tree-branch" d="M200 280 L200 200 L130 120 L100 70"/>
+            <path class="tree-branch" d="M200 280 L200 200 L270 120 L300 70"/>
+            <path class="tree-branch" d="M200 200 L160 160 L140 140"/>
+            <path class="tree-branch" d="M200 200 L240 160 L260 140"/>
+            <path class="tree-branch" d="M200 240 L170 220 L150 210"/>
+            <path class="tree-branch" d="M200 240 L230 220 L250 210"/>
+            <circle class="tree-leaf" cx="100" cy="70" r="6"/>
+            <circle class="tree-leaf" cx="300" cy="70" r="6"/>
+            <circle class="tree-leaf" cx="140" cy="140" r="5"/>
+            <circle class="tree-leaf" cx="260" cy="140" r="5"/>
+            <circle class="tree-leaf" cx="150" cy="210" r="4"/>
+            <circle class="tree-leaf" cx="250" cy="210" r="4"/>
+            <circle class="tree-leaf" cx="200" cy="180" r="5"/>
+            <circle class="tree-leaf" cx="170" cy="100" r="4"/>
+            <circle class="tree-leaf" cx="230" cy="100" r="4"/>
+        </svg>
+    </div>
+</div>
+<div class="epic-particles" id="epicParticles"></div>
 <button class="skip-btn" id="skipBtn">تخطي ⏭</button>
 
-<!-- ========== رسالة الترحيب ========== -->
-<div class="modal" id="welcomeModal">
-    <div class="modalbox">
-        <span style="font-size:2.5rem;">🦅</span>
-        <h2>أهلاً بكم</h2>
-        <p style="text-align:center;line-height:1.7;font-size:0.85rem;margin-bottom:12px;">
-        مرحباً بك في شجرة الدراوشة من عشيرة العليان بني خالد.<br>
-        مؤسس هذه الشجرة<br>
-        <span class="highlight-text">👑 علي ابن ساير ابن ذياب ابن محمد ابن خليف الدرويش 👑</span><br>
-        حفظ الله نسبكم وبارك ذريتكم.</p>
-        <button id="welcomeEnterBtn" style="width:100%;padding:10px;font-weight:bold;">دخول</button>
-    </div>
-</div>
-
-<!-- باقي المحتوى -->
-<div class="modal" id="adminWelcomeModal"><div class="modalbox"><span style="font-size:3rem;">👑</span><h2>موثق نسب أبناء درويش</h2><p>حامل أمانة نسب الدراوشة<br><span class="highlight-text">(علي بن ساير بن ذياب بن محمد بن خليف الدرويش)</span></p><button id="adminEnterBtn" style="width:100%;padding:10px;font-weight:bold;background:#238636;color:white;">متابعة</button></div></div>
-<div class="header-container" id="headerTitle"><div class="title-row"><span>🦅</span><h1>شجرة الدراوشة - عشيرة العليان - بني خالد</h1><span>🦅</span></div></div>
-<svg id="treeSvg"></svg>
-<div class="bottombar"><button id="loginBtn">🔐 تسجيل الدخول</button><button id="saveBtn" style="display:none;background:#238636;color:white;">💾 حفظ</button><button id="pdfBtn">📄 PDF</button><button id="statsBtn">📊 معلومات</button><button id="themeBtn">☀️ نهاري</button></div>
-<div class="modal" id="aboutModal"><div class="modalbox" style="text-align:right;"><h2 style="text-align:center;">نبذة</h2><p><span class="highlight-text">النسب:</span> تنتسب عشيرة "العليان" إلى قبيلة <span class="highlight-text">بني خالد</span> العريقة.</p><button id="closeAboutBtn" style="width:100%;padding:10px;">إغلاق</button></div></div>
-<div class="modal" id="adminModal"><div class="modalbox"><h2 id="nodeNameTitle">تعديل</h2><input id="newNameInput" placeholder="الاسم"><input id="birthInput" placeholder="الميلاد"><select id="statusSelect"><option value="alive">حي</option><option value="deceased">متوفي</option></select><button id="updateNodeBtn" style="background:#d4a574;color:#000;">حفظ</button><input id="childNameInput" placeholder="اسم ابن جديد"><input id="childBirthInput" placeholder="الميلاد"><button id="addChildBtn" style="background:#238636;color:white;">إضافة</button><button id="deleteNodeBtn" style="background:#da3633;color:white;">حذف</button><button id="closeAdminBtn">إلغاء</button></div></div>
+<!-- ===== باقي الواجهات ===== -->
+<div class="modal" id="aboutModal"><div class="modalbox"><h2>نبذة</h2><p>عشيرة <span class="highlight-text">العليان</span> من قبيلة <span class="highlight-text">بني خالد</span> العريقة.</p><button id="closeAboutBtn">إغلاق</button></div></div>
+<div class="modal" id="adminModal"><div class="modalbox"><h2 id="nodeNameTitle">تعديل</h2><input id="newNameInput" placeholder="الاسم"><input id="birthInput" placeholder="الميلاد"><select id="statusSelect"><option value="alive">حي</option><option value="deceased">متوفي</option></select><button id="updateNodeBtn" style="background:#d4a574;color:#000;">حفظ</button><input id="childNameInput" placeholder="اسم ابن"><input id="childBirthInput" placeholder="الميلاد"><button id="addChildBtn" style="background:#238636;color:white;">إضافة</button><button id="deleteNodeBtn" style="background:#da3633;color:white;">حذف</button><button id="closeAdminBtn">إلغاء</button></div></div>
 <div class="modal" id="loginModal"><div class="modalbox"><h2>تسجيل الدخول</h2><input type="password" id="passCode" placeholder="كلمة المرور"><button id="confirmLoginBtn">دخول</button></div></div>
 <div class="modal" id="statsModal"><div class="modalbox"><h2>📊 معلومات</h2><div id="statsContent"></div><button id="closeStatsBtn">إغلاق</button></div></div>
 <div class="modal" id="identityModal"><div class="modalbox" style="max-width:430px;padding:0;background:transparent;border:none;"><div class="identity-card"><div class="identity-content" id="identityInner"></div></div><div style="display:flex;gap:6px;justify-content:center;margin-top:10px;"><button id="printIdentityBtn" style="background:#c9a050;color:#000;">🖨️</button><button id="copyIdentityBtn">📋</button><button id="shareIdentityBtn">📤</button><button id="closeIdentityBtn">إغلاق</button></div></div></div>
 
-<script>
-// ========== المشهد الأسطوري ==========
-(function(){
-    var o=document.getElementById('introOverlay'),s=document.getElementById('skipBtn'),pe=document.getElementById('particlesEpic');
-    // جزيئات الانفجار
-    for(var i=0;i<80;i++){var p=document.createElement('div');p.className='particle-epic';p.style.cssText='left:50%;top:50%;width:'+(2+Math.random()*5)+'px;height:'+p.style.width+';background:hsl('+(35+Math.random()*20)+',100%,'+(50+Math.random()*50)+'%);--px:'+(Math.random()-0.5)*600+'px;--py:'+(Math.random()-0.5)*600+'px;animation-delay:'+(4+Math.random()*3)+'s';pe.appendChild(p)}
-    function end(){o.classList.add('fade-out');s.style.display='none';pe.style.display='none';setTimeout(function(){o.style.display='none';document.getElementById('welcomeModal').classList.add('on')},1000)}
-    setTimeout(end,12000);
-    s.addEventListener('click',end);
-})();
+<div class="header-container" id="headerTitle"><div class="title-row"><span>🦅</span><h1>شجرة الدراوشة - عشيرة العليان - بني خالد</h1><span>🦅</span></div></div>
+<svg id="treeSvg"></svg>
+<div class="bottombar"><button id="loginBtn">🔐 تسجيل الدخول</button><button id="saveBtn" style="display:none;background:#238636;color:white;">💾 حفظ</button><button id="pdfBtn">📄 PDF</button><button id="statsBtn">📊 معلومات</button><button id="themeBtn">☀️ نهاري</button></div>
 
-// ========== باقي الكود (نفسه) ==========
+<script>
+// ===== رسالة الترحيب =====
+document.getElementById('enterBtn').addEventListener('click',function(){
+    document.getElementById('welcomeIntro').style.display='none';
+    startEpic();
+});
+
+// ===== المشهد الأسطوري =====
+function startEpic(){
+    var ov=document.getElementById('epicOverlay');ov.classList.add('on');
+    var skip=document.getElementById('skipBtn');skip.classList.add('on');
+    var particles=document.getElementById('epicParticles');
+    
+    // جزيئات
+    function spawnParticles(n,delay){
+        setTimeout(function(){
+            for(var i=0;i<n;i++){var p=document.createElement('div');p.className='epic-particle';p.style.cssText='left:50%;top:50%;width:'+(1+Math.random()*4)+'px;height:'+p.style.width+';background:hsl('+(30+Math.random()*30)+',100%,'+(50+Math.random()*50)+'%);border-radius:50%;position:absolute;animation:particleBurst '+(1+Math.random()*2)+'s ease-out forwards;--px:'+(Math.random()-0.5)*500+'px;--py:'+(Math.random()-0.5)*500+'px;';particles.appendChild(p)}
+        },delay)
+    }
+    // انيميشن الجزيئات
+    var styleEl=document.createElement('style');
+    styleEl.textContent='@keyframes particleBurst{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(0)}}';
+    document.head.appendChild(styleEl);
+    
+    // 0.0s: بوابة
+    setTimeout(function(){document.getElementById('portal').classList.add('appear')},100);
+    // 0.5s: برق
+    setTimeout(function(){var b1=document.getElementById('bolt1');b1.style.left='35%';b1.style.top='-10%';b1.style.height='40%';b1.style.transform='rotate(-8deg)';b1.classList.add('strike');
+        var b2=document.getElementById('bolt2');b2.style.left='60%';b2.style.top='-10%';b2.style.height='50%';b2.style.transform='rotate(5deg)';b2.classList.add('strike')
+    },600);
+    // 1s: صقور
+    setTimeout(function(){
+        var sc=document.getElementById('swarmContainer');
+        for(var i=0;i<5;i++){var f=document.createElement('span');f.className='falcon-swarm';f.textContent='🦅';f.style.left=(20+i*15)+'%';f.style.top=(30+i*8)+'%';f.style.setProperty('--tx',(Math.random()-0.5)*100+'px');f.style.setProperty('--ty',(Math.random()-0.5)*100+'px');f.style.animationDelay=(i*0.2)+'s';f.classList.add('fly');sc.appendChild(f)}
+        setTimeout(function(){sc.innerHTML=''},2200)
+    },1000);
+    // 2.5s: ذهب سائل
+    setTimeout(function(){document.getElementById('liquidTitle').classList.add('flow');document.getElementById('liquidSub').classList.add('flow')},2500);
+    // 3.5s: انفجار
+    setTimeout(function(){document.getElementById('blast').classList.add('boom');spawnParticles(60,0)},3500);
+    // 4s: سيوف
+    setTimeout(function(){document.getElementById('swordL').classList.add('drop');document.getElementById('swordR').classList.add('drop')},4000);
+    // 4.5s: درويش
+    setTimeout(function(){document.getElementById('founderBox').classList.add('reveal');spawnParticles(40,0)},4500);
+    // 6s: إخفاء السيوف والبوابة
+    setTimeout(function(){document.getElementById('portal').style.opacity='0';document.getElementById('swordL').style.opacity='0';document.getElementById('swordR').style.opacity='0'},6000);
+    // 6.5s: الأبناء
+    setTimeout(function(){document.getElementById('childrenPillars').classList.add('show')},6500);
+    // 8s: نمو الشجرة
+    setTimeout(function(){var gt=document.getElementById('growingTree');gt.classList.add('grow');
+        var branches=gt.querySelectorAll('.tree-branch');branches.forEach(function(b,i){setTimeout(function(){b.classList.add('grow')},i*300)});
+        var leaves=gt.querySelectorAll('.tree-leaf');leaves.forEach(function(l,i){setTimeout(function(){l.classList.add('appear')},1500+i*100)});
+        spawnParticles(30,0)
+    },8000);
+    // 10s: جزيئات إضافية
+    setTimeout(function(){spawnParticles(50,0)},10000);
+    
+    // النهاية
+    function endEpic(){ov.classList.add('fade-out');skip.classList.remove('on');particles.innerHTML='';setTimeout(function(){ov.classList.remove('on','fade-out');render()},800)}
+    setTimeout(endEpic,13000);
+    skip.addEventListener('click',endEpic);
+}
+
+// ===== الشجرة (نفس الكود بدون تغيير) =====
 var familyData=window.familyData,isAdmin=false,selectedNode=null,highlightedPathIds=[],isLight=false,currentYear=2025,rootNode=null;
 var svg=d3.select("#treeSvg"),width=window.innerWidth,height=window.innerHeight,g=svg.append("g");
 svg.call(d3.zoom().scaleExtent([0.1,3]).on("zoom",function(e){g.attr("transform",e.transform)}));
-
 function getAncestorIds(n){var a=[],c=n;while(c){a.push(c.data.id);c=c.parent}return a}
 function highlightPath(n){g.selectAll(".node-group").classed("highlight",false);g.selectAll(".link").classed("highlight",false);highlightedPathIds=getAncestorIds(n);g.selectAll(".node-group").each(function(d){if(highlightedPathIds.includes(d.data.id)){d3.select(this).classed("highlight",true);d3.select(this).select("rect:first-child").attr("fill","#3d2a0a").attr("stroke","#ffd700");d3.select(this).select("text").attr("fill","#ffd700")}});g.selectAll(".link").each(function(d){if(highlightedPathIds.includes(d.source.data.id)&&highlightedPathIds.includes(d.target.data.id))d3.select(this).classed("highlight",true)})}
-svg.on("click",function(e){if(e.target===this||e.target.tagName==='svg'){g.selectAll(".node-group").classed("highlight",false);g.selectAll(".link").classed("highlight",false);highlightedPathIds=[];selectedNode=null}});
-
-function render(){
-    g.selectAll("*").remove();var r=d3.hierarchy(familyData);rootNode=r;d3.tree().nodeSize([70,200])(r);
-    g.selectAll(".link").data(r.links()).enter().append("path").attr("class","link").attr("d",d3.linkHorizontal().x(function(d){return d.y}).y(function(d){return d.x}));
-    var ng=g.selectAll(".node-group").data(r.descendants()).enter().append("g").attr("class","node-group").attr("transform",function(d){return"translate("+d.y+","+d.x+")"}).on("click",function(e,d){e.stopPropagation();handleNodeClick(d)});
-    ng.append("rect").attr("x",-40).attr("y",-18).attr("width",80).attr("height",36).attr("rx",6).attr("ry",6).attr("fill","#1a1a2e").attr("stroke","#c9a050").attr("stroke-width",2).style("filter","drop-shadow(2px 2px 3px rgba(0,0,0,0.5))");
-    ng.append("text").attr("dy",".35em").attr("text-anchor","middle").attr("fill","#e0d5c0").text(function(d){return d.data.name.split(" ")[0]});
-    if(!selectedNode)svg.call(d3.zoom().transform,d3.zoomIdentity.translate(width/4,height/2).scale(0.6));
-}
-
-// وظائف مساعدة
+function render(){g.selectAll("*").remove();var r=d3.hierarchy(familyData);rootNode=r;d3.tree().nodeSize([70,200])(r);g.selectAll(".link").data(r.links()).enter().append("path").attr("class","link").attr("d",d3.linkHorizontal().x(function(d){return d.y}).y(function(d){return d.x}));var ng=g.selectAll(".node-group").data(r.descendants()).enter().append("g").attr("class","node-group").attr("transform",function(d){return"translate("+d.y+","+d.x+")"}).on("click",function(e,d){e.stopPropagation();handleNodeClick(d)});ng.append("rect").attr("x",-40).attr("y",-18).attr("width",80).attr("height",36).attr("rx",6).attr("ry",6).attr("fill","#1a1a2e").attr("stroke","#c9a050").attr("stroke-width",2).style("filter","drop-shadow(2px 2px 3px rgba(0,0,0,0.5))");ng.append("text").attr("dy",".35em").attr("text-anchor","middle").attr("fill","#e0d5c0").text(function(d){return d.data.name.split(" ")[0]});if(!selectedNode)svg.call(d3.zoom().transform,d3.zoomIdentity.translate(width/4,height/2).scale(0.6))}
 function extractYear(s){if(!s)return null;var m=s.match(/(\d{4})/);return m?parseInt(m[1]):null}
 function calcAge(b,d){if(!b)return"غير معروف";if(d)return"متوفي";var y=extractYear(b);if(!y)return"غير محدد";var a=currentYear-y;return a<0?"تاريخ مستقبلي":a>150?"غير دقيق":"≈ "+a+" سنة"}
 function getFullLineageFromNode(n){var p=[],c=n;while(c){p.push(c.data.name.split(" ")[0]);if(c.depth===0)break;c=c.parent}return p.join(" بن ")}
 function getKunya(n){return n.data.children&&n.data.children.length>0?"أبو "+n.data.children[0].name.split(" ")[0]:""}
-function getGeneration(n){return n.depth+1}
 function getAllPeople(){var p=[];function w(n){p.push(n);if(n.children)n.children.forEach(w)}w(familyData);return p}
-
-function showStats(){
-    var all=getAllPeople(),total=all.length;document.getElementById("statsContent").innerHTML='<div class="stat-box"><h3>العدد الكامل</h3><div class="stat-row"><span>مجموع الدراوشة:</span><span class="val">'+total+' شخص</span></div></div>';document.getElementById("statsModal").classList.add("on")
-}
-
-function showIdentityCard(){
-    if(!selectedNode){alert("اختر شخصاً أولاً");return}var d=selectedNode,html='';
-    html+='<div class="id-header"><div class="id-falcons">🦅 🦅</div><div class="id-title">بطاقة الدراوشة</div></div>';
-    html+='<div class="id-number">⭐ '+(d.data.id_number||'D-R 000')+' ⭐</div>';
-    html+='<div class="id-info-row"><span class="id-info-label">👤 الاسم:</span><span class="id-info-value">'+d.data.name+'</span></div>';
-    var k=getKunya(d);if(k)html+='<div class="id-info-row"><span class="id-info-label">🏷️ الكنية:</span><span class="id-info-value">'+k+'</span></div>';
-    html+='<div class="id-info-row"><span class="id-info-label">📅 الميلاد:</span><span class="id-info-value">'+(d.data.birth||'غير مسجل')+'</span></div>';
-    html+='<div class="id-info-row"><span class="id-info-label">🕒 العمر:</span><span class="id-info-value">'+calcAge(d.data.birth,d.data.deceased)+'</span></div>';
-    html+='<div class="id-info-row"><span class="id-info-label">📋 الحالة:</span><span class="id-info-value">'+(d.data.deceased?'🕊️ متوفي':'✅ حي')+'</span></div>';
-    html+='<div class="id-info-row"><span class="id-info-label">📜 النسب:</span><span class="id-info-value">'+getFullLineageFromNode(d)+'</span></div>';
-    html+='<div class="id-stamp"><div class="stamp-circle">فخذ<br>الدراوشة</div></div>';
-    document.getElementById("identityInner").innerHTML=html;document.getElementById("identityModal").classList.add("on")
-}
-
+function showStats(){var t=getAllPeople().length;document.getElementById("statsContent").innerHTML='<div style="background:rgba(255,255,255,0.03);padding:12px;border-radius:12px;margin:6px 0"><h3>العدد الكامل</h3><p>مجموع الدراوشة: <strong style="color:#d4a574">'+t+' شخص</strong></p></div>';document.getElementById("statsModal").classList.add("on")}
+function showIdentityCard(){if(!selectedNode)return;var d=selectedNode,html='';html+='<div class="id-header"><div class="id-falcons">🦅 🦅</div><div class="id-title">بطاقة تعريفية خاصة بالدراوشة</div></div>';html+='<div class="id-number">⭐ '+(d.data.id_number||'D-R 000')+' ⭐</div>';html+='<div class="id-info-row"><span class="id-info-label">👤 الاسم:</span><span class="id-info-value">'+d.data.name+'</span></div>';var k=getKunya(d);if(k)html+='<div class="id-info-row"><span class="id-info-label">🏷️ الكنية:</span><span class="id-info-value">'+k+'</span></div>';html+='<div class="id-info-row"><span class="id-info-label">📅 الميلاد:</span><span class="id-info-value">'+(d.data.birth||'غير مسجل')+'</span></div>';html+='<div class="id-info-row"><span class="id-info-label">🕒 العمر:</span><span class="id-info-value">'+calcAge(d.data.birth,d.data.deceased)+'</span></div>';html+='<div class="id-info-row"><span class="id-info-label">📋 الحالة:</span><span class="id-info-value">'+(d.data.deceased?'🕊️ متوفي':'✅ حي')+'</span></div>';html+='<div class="id-info-row"><span class="id-info-label">📜 النسب:</span><span class="id-info-value">'+getFullLineageFromNode(d)+'</span></div>';html+='<div class="id-stamp"><div class="stamp-circle">فخذ<br>الدراوشة</div></div>';document.getElementById("identityInner").innerHTML=html;document.getElementById("identityModal").classList.add("on")}
 function handleNodeClick(d){selectedNode=d;highlightPath(d);showIdentityCard()}
-function openAdminModal(){document.getElementById("identityModal").classList.remove("on");document.getElementById("nodeNameTitle").innerText=selectedNode.data.name;document.getElementById("newNameInput").value=selectedNode.data.name;document.getElementById("birthInput").value=selectedNode.data.birth||"";document.getElementById("statusSelect").value=selectedNode.data.deceased?"deceased":"alive";document.getElementById("adminModal").classList.add("on")}
-function updateNode(){var n=document.getElementById("newNameInput").value.trim(),b=document.getElementById("birthInput").value.trim(),s=document.getElementById("statusSelect").value;if(n)selectedNode.data.name=n;selectedNode.data.birth=b||null;selectedNode.data.deceased=(s==="deceased");render();document.getElementById("adminModal").classList.remove("on")}
-function addChild(){var n=document.getElementById("childNameInput").value.trim(),bv=document.getElementById("childBirthInput").value.trim();if(n){if(!selectedNode.data.children)selectedNode.data.children=[];var nc={name:n,id:"n_"+Date.now(),children:[]};if(bv)nc.birth=bv;selectedNode.data.children.push(nc);render();document.getElementById("adminModal").classList.remove("on")}}
-function deleteNode(){if(confirm("متأكد؟")){var p=selectedNode.parent;if(p&&p.data&&p.data.children){p.data.children=p.data.children.filter(function(c){return c!==selectedNode.data});selectedNode=null;render();document.getElementById("adminModal").classList.remove("on")}}}
-function saveChanges(){var j=JSON.stringify(familyData,null,2);var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([j],{type:"application/json"}));a.download="data.js_تحديث.txt";a.click();alert("تم الحفظ")}
-function printPDF(){document.querySelector('.header-container').style.display='none';document.querySelector('.bottombar').style.display='none';window.print();document.querySelector('.header-container').style.display='';document.querySelector('.bottombar').style.display=''}
-function toggleTheme(){isLight=!isLight;document.body.classList.toggle("light-theme");document.getElementById("themeBtn").textContent=isLight?"🌙 ليلي":"☀️ نهاري"}
 function closeModal(id){document.getElementById(id).classList.remove("on")}
+function saveChanges(){var j=JSON.stringify(familyData,null,2);var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([j],{type:"application/json"}));a.download="data.js_تحديث.txt";a.click();alert("تم الحفظ!")}
+function printPDF(){var h=document.querySelector('.header-container');h.style.display='none';document.querySelector('.bottombar').style.display='none';window.print();h.style.display='';document.querySelector('.bottombar').style.display=''}
+function toggleTheme(){isLight=!isLight;document.body.classList.toggle("light-theme");document.getElementById("themeBtn").textContent=isLight?"🌙 ليلي":"☀️ نهاري"}
 
-document.getElementById("welcomeEnterBtn").addEventListener("click",function(){closeModal('welcomeModal')});
-document.getElementById("adminEnterBtn").addEventListener("click",function(){closeModal('adminWelcomeModal')});
+// ===== الأزرار =====
+document.getElementById("closeAboutBtn").addEventListener("click",function(){closeModal('aboutModal')});
+document.getElementById("closeAdminBtn").addEventListener("click",function(){closeModal('adminModal')});
+document.getElementById("closeStatsBtn").addEventListener("click",function(){closeModal('statsModal')});
+document.getElementById("closeIdentityBtn").addEventListener("click",function(){closeModal('identityModal')});
 document.getElementById("loginBtn").addEventListener("click",function(){document.getElementById("loginModal").classList.add("on")});
 document.getElementById("saveBtn").addEventListener("click",saveChanges);
 document.getElementById("pdfBtn").addEventListener("click",printPDF);
 document.getElementById("statsBtn").addEventListener("click",showStats);
 document.getElementById("themeBtn").addEventListener("click",toggleTheme);
-document.getElementById("closeAboutBtn").addEventListener("click",function(){closeModal('aboutModal')});
-document.getElementById("closeAdminBtn").addEventListener("click",function(){closeModal('adminModal')});
-document.getElementById("closeStatsBtn").addEventListener("click",function(){closeModal('statsModal')});
-document.getElementById("closeIdentityBtn").addEventListener("click",function(){closeModal('identityModal')});
-document.getElementById("confirmLoginBtn").addEventListener("click",function(){if(document.getElementById("passCode").value==="1234"){isAdmin=true;document.getElementById("saveBtn").style.display="inline-block";closeModal('loginModal');document.getElementById("adminWelcomeModal").classList.add("on")}else{alert("خطأ")}});
-document.getElementById("updateNodeBtn").addEventListener("click",updateNode);
-document.getElementById("addChildBtn").addEventListener("click",addChild);
-document.getElementById("deleteNodeBtn").addEventListener("click",deleteNode);
-document.getElementById("printIdentityBtn").addEventListener("click",function(){var c=document.getElementById("identityCardContent");var w=window.open('','','width=450,height=700');w.document.write('<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><style>body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#1a1a1a;margin:0;padding:20px;}</style></head><body>');w.document.write(c.outerHTML);w.document.write('</body></html>');w.document.close();setTimeout(function(){w.print()},500)});
-document.getElementById("copyIdentityBtn").addEventListener("click",function(){if(!selectedNode)return;var d=selectedNode,t='🦅 '+d.data.name+' - '+(d.data.id_number||'')+'\n'+getFullLineageFromNode(d);navigator.clipboard?navigator.clipboard.writeText(t).then(function(){alert("تم النسخ")}):prompt("انسخ:",t)});
-document.getElementById("shareIdentityBtn").addEventListener("click",function(){if(!selectedNode)return;var d=selectedNode,t='🦅 '+d.data.name+'\n'+getFullLineageFromNode(d);navigator.share?navigator.share({title:'بطاقة الدراوشة',text:t}):document.getElementById("copyIdentityBtn").click()});
-
+document.getElementById("headerTitle").addEventListener("click",function(){document.getElementById("aboutModal").classList.add("on")});
+document.getElementById("confirmLoginBtn").addEventListener("click",function(){if(document.getElementById("passCode").value==="1234"){isAdmin=true;document.getElementById("saveBtn").style.display="inline-block";closeModal('loginModal')}else{alert("خطأ")}});
+document.getElementById("updateNodeBtn").addEventListener("click",function(){var n=document.getElementById("newNameInput").value.trim();if(n)selectedNode.data.name=n;selectedNode.data.birth=document.getElementById("birthInput").value.trim()||null;selectedNode.data.deceased=(document.getElementById("statusSelect").value==="deceased");render();closeModal('adminModal')});
+document.getElementById("addChildBtn").addEventListener("click",function(){var n=document.getElementById("childNameInput").value.trim();if(n&&selectedNode){if(!selectedNode.data.children)selectedNode.data.children=[];selectedNode.data.children.push({name:n,id:"n_"+Date.now(),children:[]});render();closeModal('adminModal')}});
+document.getElementById("deleteNodeBtn").addEventListener("click",function(){if(confirm("متأكد؟")){var p=selectedNode.parent;if(p&&p.data&&p.data.children){p.data.children=p.data.children.filter(function(c){return c!==selectedNode.data});selectedNode=null;render();closeModal('adminModal')}}});
+document.getElementById("printIdentityBtn").addEventListener("click",function(){var c=document.getElementById("identityCardContent");var w=window.open('','','width=450,height=700');w.document.write('<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><style>body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#1a1a1a;margin:0;padding:20px}</style></head><body>');w.document.write(c.outerHTML);w.document.write('</body></html>');w.document.close();setTimeout(function(){w.print()},500)});
+document.getElementById("copyIdentityBtn").addEventListener("click",function(){if(!selectedNode)return;var t='🦅 '+selectedNode.data.name+' - '+(selectedNode.data.id_number||'')+'\n'+getFullLineageFromNode(selectedNode);navigator.clipboard?navigator.clipboard.writeText(t).then(function(){alert("تم النسخ")}):prompt("انسخ:",t)});
+document.getElementById("shareIdentityBtn").addEventListener("click",function(){if(!selectedNode)return;var t='🦅 '+selectedNode.data.name+'\n'+getFullLineageFromNode(selectedNode);navigator.share?navigator.share({title:'بطاقة الدراوشة',text:t}):document.getElementById("copyIdentityBtn").click()});
 ["aboutModal","adminModal","loginModal","statsModal","identityModal"].forEach(function(id){document.getElementById(id).addEventListener("click",function(e){if(e.target===this)closeModal(id)})});
-render();
 </script>
 </body>
 </html>
