@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://aldarawsheh-family.github.io/aldarawsheh.github.io/sitemap.xml
