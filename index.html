@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <!-- تحميل البيانات من ملف خارجي -->
     <script src="data.js"></script>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -178,9 +177,9 @@
     </div>
 
     <script>
-        // familyData محملة من data.js
+        // familyData تأتي من data.js
 
-        // تعيين الفروع
+        // تحديد الفروع حسب الابن الأكبر لـ "درويش"
         function setBranchRecursive(node, branch) {
             node.branch = branch;
             if (node.children) node.children.forEach(c => setBranchRecursive(c, branch));
@@ -231,7 +230,7 @@
 
         const branchColors = {
             light: { "محيميد": "#1F618D", "حميدو": "#1E8449", "علي": "#7D3C98", "خليف": "#B8860B" },
-            dark: { "محيميد": "#5DADE2", "حميدو": "#58D68D", "علي": "#AF7AC5", "خليف": "#FFD700" }
+            dark:  { "محيميد": "#5DADE2", "حميدو": "#58D68D", "علي": "#AF7AC5", "خليف": "#FFD700" }
         };
 
         function render() {
@@ -252,44 +251,36 @@
                 .attr("transform", d => `translate(${d.y},${d.x})`)
                 .on("click", (event, d) => { event.stopPropagation(); handleNodeClick(d); });
 
+            const isLightNow = document.body.classList.contains("light-theme");
+
             nodeGroups.each(function(d) {
-                const isFounder = d.data.id === "علي_الساير";
                 const branch = d.data.branch || "خليف";
-                const isLightNow = document.body.classList.contains("light-theme");
                 const color = isLightNow ? branchColors.light[branch] : branchColors.dark[branch];
-                const filter = isFounder ? "drop-shadow(0 0 8px gold)" : "drop-shadow(2px 2px 3px rgba(0,0,0,0.5))";
+                const isFounder = d.data.id === "علي_الساير";
 
+                // صندوق رئيسي شفاف أنيق
                 d3.select(this).append("rect")
-                    .attr("x", -40).attr("y", -18)
-                    .attr("width", 80).attr("height", 36)
-                    .attr("rx", 6).attr("ry", 6)
-                    .attr("fill", isLightNow ? "#faf6f0" : "#1a1a2e")
+                    .attr("x", -42).attr("y", -18)
+                    .attr("width", 84).attr("height", 36)
+                    .attr("rx", 8).attr("ry", 8)
+                    .attr("fill", isLightNow ? "#ffffffcc" : "#1e1e2fcc")
                     .attr("stroke", color)
-                    .attr("stroke-width", isFounder ? 4 : 2.5)
-                    .style("filter", filter);
+                    .attr("stroke-width", 2.5);
 
+                // خط ملون على اليمين (شريط الفرع)
                 d3.select(this).append("rect")
-                    .attr("x", -35).attr("y", -14)
-                    .attr("width", 70).attr("height", 28)
-                    .attr("rx", 4).attr("ry", 4)
-                    .attr("fill", "none")
-                    .attr("stroke", color)
-                    .attr("stroke-width", 1)
-                    .attr("stroke-dasharray", "3,2")
-                    .attr("opacity", 0.9);
+                    .attr("x", -42).attr("y", -18)
+                    .attr("width", 5).attr("height", 36)
+                    .attr("rx", 3).attr("ry", 3)
+                    .attr("fill", color);
 
-                d3.select(this).append("line")
-                    .attr("x1", -15).attr("y1", 10).attr("x2", 15).attr("y2", 10)
-                    .attr("stroke", color).attr("stroke-width", 1).attr("opacity", 0.7);
-                d3.select(this).append("line")
-                    .attr("x1", -10).attr("y1", 13).attr("x2", 10).attr("y2", 13)
-                    .attr("stroke", color).attr("stroke-width", 0.8).attr("opacity", 0.6);
-
+                // اسم الشخص (مع نجمة إذا كان المؤسس)
                 const displayName = (isFounder ? "⭐ " : "") + d.data.name.split(" ")[0];
                 d3.select(this).append("text")
                     .attr("dy", ".35em")
                     .attr("text-anchor", "middle")
-                    .attr("fill", isLightNow ? "#3a2a1a" : "#e0d5c0")
+                    .attr("fill", isLightNow ? "#1a1a1a" : "#f0f0f0")
+                    .style("font-weight", isFounder ? "bold" : "normal")
                     .text(displayName);
             });
 
@@ -298,23 +289,20 @@
         }
 
         function updateThemeColors() {
+            const isLightNow = document.body.classList.contains("light-theme");
             g.selectAll(".node-group").each(function(d) {
-                const isFounder = d.data.id === "علي_الساير";
                 const branch = d.data.branch || "خليف";
-                const isLightNow = document.body.classList.contains("light-theme");
                 const color = isLightNow ? branchColors.light[branch] : branchColors.dark[branch];
-                const rect = d3.select(this).select("rect:first-child");
-                rect.attr("stroke", color);
-                if (isFounder) rect.attr("stroke-width", 4).style("filter", "drop-shadow(0 0 8px gold)");
-                else rect.attr("stroke-width", 2.5).style("filter", "drop-shadow(2px 2px 3px rgba(0,0,0,0.5))");
-                d3.select(this).select("rect:nth-child(2)").attr("stroke", color);
-                d3.select(this).selectAll("line").attr("stroke", color);
-                d3.select(this).select("text").attr("fill", isLightNow ? "#3a2a1a" : "#e0d5c0");
+                d3.select(this).select("rect:first-child")
+                    .attr("fill", isLightNow ? "#ffffffcc" : "#1e1e2fcc")
+                    .attr("stroke", color);
+                d3.select(this).select("rect:nth-child(2)").attr("fill", color);
+                d3.select(this).select("text")
+                    .attr("fill", isLightNow ? "#1a1a1a" : "#f0f0f0");
             });
             if (selectedNode) highlightPath(selectedNode);
         }
 
-        // دوال مساعدة (convertYear, extractYear, calcAge... إلخ)
         function convertYear(s) { if (!s) return null; if (s.indexOf("هـ")>-1||s.indexOf("ه")>-1) { var m=s.match(/(\d{4})/); if (m) return Math.round(parseInt(m[1])*0.97+622); } var m=s.match(/(\d{4})/); if (m) return parseInt(m[1]); return null; }
         function extractYear(s) { if (!s) return null; var c=convertYear(s); if (c&&c>=1200&&c<=2100) return c; var ms=s.match(/\d{4}/g); if (!ms) return null; for (var i=0;i<ms.length;i++){ var y=parseInt(ms[i]); if (y>=1200&&y<=2100) return y;} return null; }
         function calcAge(b,d) { if (!b) return "غير معروف"; if (d) return "متوفي"; var y=extractYear(b); if (!y) return "غير محدد"; var a=currentYear-y; if (a<0) return "تاريخ مستقبلي"; if (a>150) return "غير دقيق"; return "≈ "+a+" سنة"; }
@@ -425,8 +413,8 @@
         }
 
         function saveChanges(){
-            // مؤقتاً: حفظ إلى GitHub API سيُضاف لاحقاً
-            alert("ميزة الحفظ إلى GitHub قيد التفعيل");
+            // سيبقى فارغاً حتى تفعيل GitHub API لاحقاً
+            alert("لم يتم ربط الحفظ بعد. عند التفعيل سأقوم بتحديث data.js تلقائياً.");
         }
 
         function printPDF(){ var h=document.querySelector('.header-container'); var b=document.querySelector('.bottombar'); h.style.display='none'; b.style.display='none'; window.print(); h.style.display=''; b.style.display=''; }
