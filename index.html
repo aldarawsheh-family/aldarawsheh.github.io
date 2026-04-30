@@ -2,448 +2,1354 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شجرة الدراوشة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=0.3">
+    <title>شجرة الدرواشة - عشيرة العليان</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Cairo',sans-serif; background:#0d1117; overflow:hidden; height:100vh; color:#e0d5c0; }
-        .header-container { position:fixed; top:10px; left:50%; transform:translateX(-50%); z-index:100; text-align:center; cursor:pointer; background:rgba(22,27,34,0.9); padding:5px 15px; border-radius:8px; border:1px solid rgba(212,165,116,0.3); white-space:nowrap; }
-        .title-row { display:flex; align-items:center; justify-content:center; gap:8px; }
-        .title-row h1 { font-size:0.9rem; color:#f0d9b5; margin:0; font-weight:700; }
-        .falcon { font-size:1rem; }
-        svg { width:100%; height:100vh; cursor:grab; display:block; }
-        .link { fill:none; stroke:rgba(201,160,80,0.3); stroke-width:1.5px; transition:all 0.3s ease; }
-        .link.highlight { stroke:#ffd700!important; stroke-width:3px!important; }
-        .node-group text { font-size:10px; pointer-events:none; text-anchor:middle; font-weight:700; }
-        .bottombar { position:fixed; bottom:0; left:0; right:0; height:40px; background:#161b22; border-top:1px solid #d4a574; display:flex; justify-content:center; align-items:center; gap:6px; z-index:100; flex-wrap:wrap; padding:2px; }
-        button { background:rgba(212,165,116,0.1); color:#d4a574; border:1px solid #d4a574; padding:4px 8px; border-radius:8px; cursor:pointer; font-family:'Cairo'; font-size:0.65rem; transition:all 0.3s ease; white-space:nowrap; }
-        button:hover { background:rgba(212,165,116,0.2); }
-        .modal { position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:2000; display:none; justify-content:center; align-items:center; backdrop-filter:blur(10px); }
-        .modal.on { display:flex; }
-        .modalbox { background:#1c2128; border:2px solid #d4a574; border-radius:20px; padding:20px; width:90%; max-width:500px; text-align:center; max-height:85vh; overflow-y:auto; }
-        .modalbox h2 { color:#f0d9b5; margin-bottom:12px; font-size:1.1rem; border-bottom:1px solid #d4a574; padding-bottom:8px; }
-        .highlight-text { color:#d4a574; font-weight:700; }
-        input, select { width:100%; padding:8px; margin:6px 0; background:#0d1117; border:1px solid #d4a574; color:#fff; border-radius:8px; text-align:center; font-family:'Cairo'; font-size:0.8rem; }
-        .info-card { text-align:right; background:rgba(255,255,255,0.05); padding:12px; border-radius:12px; margin-top:8px; border-right:4px solid #d4a574; }
-        .info-label { color:#d4a574; font-size:0.8rem; font-weight:bold; display:block; margin-bottom:4px; }
-        .deceased-badge { display:inline-block; background:rgba(200,50,50,0.2); color:#f07070; padding:2px 8px; border-radius:12px; font-size:0.75rem; }
-        .stat-box { text-align:right; background:rgba(255,255,255,0.03); border:1px solid rgba(212,165,116,0.2); padding:12px; border-radius:12px; margin:6px 0; }
-        .stat-box h3 { color:#f0d9b5; font-size:0.8rem; margin-bottom:6px; }
-        .stat-row { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.7rem; }
-        .stat-row .val { color:#d4a574; font-weight:700; }
-        .about-text { color:#e0d5c0!important; }
-        .welcome-text { color:#e0d5c0!important; }
 
-        /* الوضع النهاري */
-        body.light-theme { background:#f5f0e8; color:#3a2a1a; }
-        body.light-theme .header-container { background:rgba(255,255,255,0.9); border-color:rgba(180,140,80,0.5); }
-        body.light-theme .title-row h1 { background:linear-gradient(135deg,#8b6914,#c9a050,#6b4e0a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-        body.light-theme .link { stroke:rgba(180,140,80,0.5); }
-        body.light-theme .link.highlight { stroke:#6b4e0a!important; }
-        body.light-theme .bottombar { background:#fff8f0; border-top-color:#8b6914; }
-        body.light-theme button { background:rgba(180,140,80,0.15); color:#6b4e0a; border-color:#8b6914; }
-        body.light-theme .modalbox { background:#fff8f0; border-color:#8b6914; }
-        body.light-theme .modalbox h2 { color:#6b4e0a; border-bottom-color:#8b6914; }
-        body.light-theme .highlight-text { color:#8b6914; }
-        body.light-theme input, body.light-theme select { background:#fff; border-color:#8b6914; color:#3a2a1a; }
-        body.light-theme .info-card { background:rgba(180,140,80,0.08); border-right-color:#8b6914; }
-        body.light-theme .info-label { color:#8b6914; }
-        body.light-theme .stat-box h3 { color:#6b4e0a; }
-        body.light-theme .stat-row .val { color:#8b6914; }
-        body.light-theme .about-text { color:#2a1a0a!important; font-weight:600!important; }
-        body.light-theme .welcome-text { color:#2a1a0a!important; font-weight:600!important; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8f4f8, #f0f8ff, #e6f0fa, #ffffff);
+            background-size: 400% 400%;
+            animation: bgMove 20s ease infinite;
+            color: #2c3e50;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            touch-action: manipulation;
+            position: relative;
+        }
 
-        /* بطاقة الهوية */
-        .identity-card { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%); border:6px solid #c9a050; border-radius:20px; padding:25px; position:relative; overflow:hidden; box-shadow:0 0 40px rgba(0,0,0,0.8); }
-        body.light-theme .identity-card { background:#faf6f0; border-color:#8b6914; }
-        .identity-content { position:relative; z-index:1; }
-        .id-header { text-align:center; margin-bottom:15px; padding-bottom:10px; border-bottom:2px solid #c9a050; }
-        body.light-theme .id-header { border-bottom-color:#8b6914; }
-        .id-falcons { font-size:1.5rem; letter-spacing:5px; margin-bottom:5px; display:block!important; }
-        .id-title { font-family:'Amiri',serif; font-size:1.1rem; color:#c9a050; font-weight:700; }
-        body.light-theme .id-title { color:#8b6914; }
-        .id-subtitle { font-size:0.6rem; color:#999; }
-        body.light-theme .id-subtitle { color:#8b6914; }
-        .id-number { display:block; text-align:center; font-family:'Amiri',serif; font-size:1.3rem; color:#c9a050; font-weight:bold; margin:10px 0; }
-        body.light-theme .id-number { color:#8b6914; }
-        .id-info-row { display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dotted #555; font-size:0.7rem; }
-        body.light-theme .id-info-row { border-bottom-color:#c9a050; }
-        .id-info-label { color:#c9a050; font-weight:700; }
-        body.light-theme .id-info-label { color:#8b6914; }
-        .id-info-value { color:#ddd; }
-        body.light-theme .id-info-value { color:#3a2a1a; }
-        .id-stamp { display:flex; justify-content:center; margin:15px 0; }
-        .stamp-circle { width:70px; height:70px; border-radius:50%; border:3px solid #1565C0; background:rgba(21,101,192,0.05); display:flex; align-items:center; justify-content:center; text-align:center; font-size:0.5rem; color:#1565C0; font-weight:900; line-height:1.4; letter-spacing:1px; box-shadow:0 0 20px rgba(21,101,192,0.3), inset 0 0 15px rgba(21,101,192,0.08); transform:rotate(-5deg); }
-        body.light-theme .stamp-circle { border-color:#0D47A1; color:#0D47A1; box-shadow:0 0 20px rgba(13,71,161,0.3), inset 0 0 15px rgba(13,71,161,0.08); }
-        .id-note { font-size:0.5rem; color:#777; text-align:center; margin-top:10px; padding-top:8px; border-top:1px solid #444; }
-        body.light-theme .id-note { color:#8b6914; border-top-color:#c9a050; }
-        .admin-on-card { display:flex; gap:6px; justify-content:center; margin-top:10px; flex-wrap:wrap; }
-        .admin-title { color:#d4a574!important; font-family:'Amiri',serif; }
+        body::before {
+            content: '';
+            position: fixed;
+            top: -100px;
+            left: -100px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(100,149,237,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -150px;
+            right: -150px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(72,209,204,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-        @media print { @page { size:A4 landscape; margin:10mm; } body { background:white!important; } .modal,.bottombar,.header-container { display:none!important; } svg { height:auto!important; } .link { stroke:#999!important; } .node-group text { fill:#000!important; font-size:12px!important; } }
+        @keyframes bgMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .header {
+            width: 100%;
+            padding: 10px 16px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+            position: relative;
+        }
+        .header .title-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.3;
+        }
+        .header .main-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #1a5276, #2e86c1, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header .sub-title {
+            font-size: 0.75em;
+            background: linear-gradient(45deg, #1a5276, #2e86c1, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0.8;
+        }
+        .header .header-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .header .btn-icon {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(52,152,219,0.3);
+            color: #2c3e50;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+        .header .btn-icon:hover {
+            background: rgba(255,255,255,0.95);
+            border-color: #3498db;
+        }
+
+        .tree-container {
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            cursor: grab;
+            z-index: 1;
+        }
+        .tree-container:active { cursor: grabbing; }
+        .tree {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            will-change: transform;
+            transition: transform 0.1s ease-out;
+        }
+
+        .branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .branch.has-children > .card {
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(52,152,219,0.2);
+            border-radius: 18px;
+            padding: 14px 24px;
+            text-align: center;
+            min-width: 130px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            z-index: 2;
+            border-color: var(--branch-color, rgba(52,152,219,0.3));
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+        .card .name {
+            font-size: 1em;
+            font-weight: bold;
+            color: var(--branch-color, #2c3e50);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .card .status-badge {
+            font-size: 0.7em;
+            display: block;
+            opacity: 0.7;
+            margin-top: 4px;
+            color: #555;
+        }
+
+        /* أشكال الصناديق المخصصة */
+        .card.card-shape-gold {
+            border-radius: 20px !important;
+            background: linear-gradient(145deg, #fff7e0, #f5e1b0) !important;
+            border: 3px solid #d4af37 !important;
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.3) !important;
+        }
+        .card.card-shape-jewel {
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40% !important;
+            background: radial-gradient(circle at 30% 30%, #fff, #d4c5e0) !important;
+            border: 2px solid #8a6e9e !important;
+            padding: 20px !important;
+        }
+        .card.card-shape-papyrus {
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70% !important;
+            background: #fcf3e0 !important;
+            border: 2px solid #c9a96b !important;
+        }
+        .card.card-shape-hexagon {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%) !important;
+            border: none !important;
+            padding: 22px 28px !important;
+            min-width: 120px !important;
+        }
+        .card.card-shape-knight {
+            border-radius: 4px 30px 4px 30px !important;
+            background: linear-gradient(135deg, #e8e0d5, #c4b7a6) !important;
+            border: 2px solid #5a4a3a !important;
+        }
+
+        .card.card-root-special {
+            background: linear-gradient(135deg, #fff9e6, #fff3cc, #ffedb3);
+            border: 3px solid #f0a500;
+            box-shadow: 0 0 0 5px rgba(240,165,0,0.15), 0 0 0 10px rgba(240,165,0,0.08), 0 10px 30px rgba(240,165,0,0.3);
+            border-radius: 24px;
+            padding: 18px 32px;
+            animation: glowPulse 2.5s ease-in-out infinite;
+            position: relative;
+            overflow: visible;
+        }
+        .card.card-root-special::before {
+            content: '✦';
+            position: absolute;
+            top: -12px;
+            right: -10px;
+            font-size: 1.4em;
+            color: #f0a500;
+            z-index: 3;
+            animation: spinStar 4s linear infinite;
+        }
+        .card.card-root-special::after {
+            content: '✦';
+            position: absolute;
+            bottom: -12px;
+            left: -10px;
+            font-size: 1.4em;
+            color: #f0a500;
+            z-index: 3;
+            animation: spinStar 4s linear infinite reverse;
+        }
+        @keyframes spinStar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .card.card-root-special .name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #b7950b;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+        }
+        .card.card-root-special .status-badge {
+            color: #8b7300;
+            font-weight: bold;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 0 5px rgba(240,165,0,0.15), 0 0 0 10px rgba(240,165,0,0.08), 0 10px 30px rgba(240,165,0,0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(240,165,0,0.3), 0 0 0 14px rgba(240,165,0,0.15), 0 12px 35px rgba(240,165,0,0.45); }
+        }
+
+        .color-root > .card { --branch-color: #b7950b; }
+        .color-khulaif > .card { --branch-color: #e67e22; }
+        .color-aloosh > .card { --branch-color: #27ae60; }
+        .color-hamid > .card { --branch-color: #2980b9; }
+        .color-hamido > .card { --branch-color: #c0392b; }
+
+        .color-root .branch { --branch-color: #b7950b; }
+        .color-khulaif .branch { --branch-color: #e67e22; }
+        .color-aloosh .branch { --branch-color: #27ae60; }
+        .color-hamid .branch { --branch-color: #2980b9; }
+        .color-hamido .branch { --branch-color: #c0392b; }
+
+        .branch.has-children > .card::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 40px;
+            background: var(--branch-color);
+            opacity: 0.5;
+        }
+
+        .children {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            padding-top: 40px;
+        }
+
+        .children > .branch::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 40px;
+            background: var(--branch-color);
+            opacity: 0.5;
+        }
+
+        .manager-actions {
+            display: none;
+            margin-top: 8px;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .show-manager .manager-actions { display: flex; }
+        .manager-actions button {
+            background: rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.15);
+            color: #333;
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.75em;
+            white-space: nowrap;
+        }
+        .manager-actions .btn-delete {
+            background: rgba(231,76,60,0.1);
+            border-color: rgba(231,76,60,0.3);
+            color: #c0392b;
+        }
+        .manager-actions .btn-shape {
+            background: rgba(240,165,0,0.1);
+            border-color: rgba(240,165,0,0.3);
+            color: #b7950b;
+        }
+        .manager-actions .btn-family-color {
+            background: rgba(39,174,96,0.1);
+            border-color: rgba(39,174,96,0.3);
+            color: #27ae60;
+        }
+
+        .welcome-overlay {
+            display: none;
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        .welcome-overlay.active { display: flex; }
+
+        .welcome-card {
+            background: white;
+            border: 2px solid #f0a500;
+            border-radius: 24px;
+            padding: 30px 24px;
+            width: 340px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            color: #2c3e50;
+            animation: popIn 0.5s ease-out;
+            position: relative;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .welcome-card .welcome-icon { font-size: 3em; margin-bottom: 10px; }
+        .welcome-card h2 { font-size: 1.4em; color: #1a5276; margin-bottom: 8px; }
+        .welcome-card .welcome-text { font-size: 0.95em; line-height: 1.8; color: #444; margin: 12px 0; }
+        .welcome-card .welcome-text strong { color: #f0a500; }
+        .welcome-card .welcome-footer { margin-top: 15px; font-size: 0.9em; color: #27ae60; font-weight: bold; }
+        .welcome-card .btn-close-welcome {
+            margin-top: 18px;
+            background: linear-gradient(45deg, #1a5276, #2980b9);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(6px);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .modal.active { display: flex; }
+
+        .id-card {
+            background: white;
+            border: 2px solid #f0a500;
+            border-radius: 16px;
+            padding: 15px;
+            width: 340px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            color: #2c3e50;
+            position: relative;
+            z-index: 101;
+        }
+        .id-card .close-btn { position: absolute; top:8px; left:12px; background:none; border:none; color:#333; font-size:1.3em; cursor:pointer; }
+        .id-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(0,0,0,0.15);
+        }
+        .id-card .card-header .card-branch {
+            font-size: 0.7em;
+            opacity: 0.7;
+        }
+        .id-card .card-header .card-id {
+            font-size: 0.75em;
+            font-weight: bold;
+            color: #f0a500;
+        }
+        .id-card .card-body {
+            text-align: right;
+        }
+        .id-card .card-body .field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed rgba(0,0,0,0.08);
+        }
+        .id-card .card-body .field .field-icon {
+            font-size: 1.1em;
+            width: 22px;
+            text-align: center;
+        }
+        .id-card .card-body .field .field-label {
+            opacity: 0.6;
+            font-size: 0.8em;
+            min-width: 45px;
+        }
+        .id-card .card-body .field .field-value {
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .id-card .card-lineage {
+            margin-top: 10px;
+            font-size: 0.75em;
+            opacity: 0.75;
+            text-align: center;
+            border-top: 1px dashed rgba(0,0,0,0.1);
+            padding-top: 10px;
+            line-height: 1.5;
+        }
+        .stamp {
+            margin-top: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #c0392b;
+            border: 2px solid #c0392b;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 8px;
+            transform: rotate(-5deg);
+            opacity: 0.85;
+        }
+
+        .form-modal {
+            background: white;
+            border: 2px solid #f0a500;
+            border-radius: 20px;
+            padding: 25px;
+            width: 320px;
+            max-height: 80vh;
+            overflow-y: auto;
+            text-align: right;
+            color: #2c3e50;
+            position: relative;
+            z-index: 101;
+        }
+        .form-modal h3 { text-align: center; margin-bottom: 15px; color: #f0a500; }
+        .form-modal label { display: block; margin: 10px 0 4px; font-size: 0.9em; opacity: 0.8; }
+        .form-modal input, .form-modal select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.2);
+            background: #fafafa;
+            color: #2c3e50;
+            font-size: 1em;
+        }
+        .form-modal .form-buttons { display: flex; gap: 10px; margin-top: 20px; justify-content: center; flex-wrap: wrap; }
+        .form-modal button { padding: 10px 20px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer; font-size: 1em; }
+        .btn-save { background: #f0a500; color: white; }
+        .btn-cancel { background: #eee; color: #333; }
+        .btn-danger { background: #c0392b; color: white; }
+
+        .stats-modal {
+            background: white;
+            border: 2px solid #f0a500;
+            border-radius: 20px;
+            padding: 25px;
+            width: 340px;
+            text-align: center;
+            color: #2c3e50;
+            position: relative;
+            z-index: 101;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .stats-modal h3 { color: #f0a500; margin-bottom: 15px; }
+        .stats-modal .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+            font-size: 0.9em;
+        }
+        .stats-modal .stat-row .stat-label { opacity: 0.7; text-align: right; }
+        .stats-modal .stat-row .stat-value { font-weight: bold; color: #1a5276; }
+
+        .password-modal {
+            background: white;
+            border: 2px solid #f0a500;
+            border-radius: 20px;
+            padding: 25px;
+            width: 320px;
+            text-align: right;
+            color: #2c3e50;
+            position: relative;
+            z-index: 101;
+        }
+        .password-modal h3 { text-align: center; margin-bottom: 15px; color: #f0a500; }
+        .password-modal label { display: block; margin: 10px 0 4px; font-size: 0.9em; opacity: 0.8; }
+        .password-modal input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.2);
+            background: #fafafa;
+            color: #2c3e50;
+            font-size: 1em;
+        }
+
+        .zoom-controls {
+            position: fixed; bottom: 20px; right: 20px;
+            display: flex; flex-direction: column; gap: 10px; z-index: 50;
+        }
+        .zoom-btn {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            color: #2c3e50;
+            border: 2px solid rgba(52,152,219,0.3);
+            width: 52px; height: 52px; border-radius: 50%;
+            font-size: 2em; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
-<body class="">
+<body>
 
-    <!-- بيانات الشجرة مدمجة كاملة -->
-    <script id="treeDataBlock" type="application/json">
-        {"name":"درويش-العلياني","id":"درويش","birth":"1870","deceased":true,"children":[{"name":"محيميد الدرويش","id":"محيميد","id_number":"D-R 1002","birth":"1897","deceased":true},{"name":"حميدو الدرويش","id":"حميدو","id_number":"D-R 1003","birth":"1895","deceased":true},{"name":"علي الدرويش","id":"علي_بن_درويش","id_number":"D-R 1004","birth":"1892","deceased":true},{"name":"خليف الدرويش","id":"خليف","children":[{"name":"محمد الخليف","id":"محمد_خليف","children":[{"name":"ذياب المحمد","id":"ذياب","children":[{"name":"محمد الذياب","id":"محمد_ذياب","children":[{"name":"جاسم المحمد","id":"جاسم","children":[{"name":"محمد الجاسم","id":"محمد_جاسم","id_number":"D-R 1010","birth":"2003","deceased":false},{"name":"أحمد الجاسم","id":"أحمد_جاسم","id_number":"D-R 1011"},{"name":"مراد الجاسم","id":"مراد","id_number":"D-R 1012"},{"name":"علي الجاسم","id":"علي_جاسم","id_number":"D-R 1013"},{"name":"حسن الجاسم","id":"حسن_جاسم","id_number":"D-R 1014"}],"id_number":"D-R 1009","birth":"1980","deceased":false},{"name":"خالد المحمد","id":"خالد_محمد","children":[{"name":"وسيم الخالد","id":"وسيم","id_number":"D-R 1016","birth":"2005","deceased":false},{"name":"وائل الخالد","id":"وائل","id_number":"D-R 1017","birth":"2006","deceased":false},{"name":"وليد الخالد","id":"وليد","id_number":"D-R 1018","birth":null,"deceased":true}],"id_number":"D-R 1015","birth":"1980","deceased":false},{"name":"إسماعيل المحمد","id":"إسماعيل","children":[{"name":"علي الإسماعيل","id":"علي_إسماعيل","id_number":"D-R 1020"},{"name":"محمد الإسماعيل","id":"محمد_إسماعيل","id_number":"D-R 1021"}],"id_number":"D-R 1019","birth":"1986","deceased":false},{"name":"إبراهيم المحمد","id":"إبراهيم","children":[{"name":"عثمان الإبراهيم","id":"عثمان_إبراهيم","id_number":"D-R 1023"},{"name":"ذياب الإبراهيم","id":"ذياب_إبراهيم","id_number":"D-R 1024"},{"name":"عمر الإبراهيم","id":"عمر_إبراهيم","id_number":"D-R 1025"}],"id_number":"D-R 1022","birth":"1989","deceased":false},{"name":"عثمان المحمد","id":"عثمان","children":[{"name":"إبراهيم العثمان","id":"إبراهيم_عثمان","id_number":"D-R 1027"}],"id_number":"D-R 1026"},{"name":"خليل المحمد","id":"خليل","children":[{"name":"حسن الخليل","id":"حسن_خليل","id_number":"D-R 1029"},{"name":"خالد الخليل","id":"خالد_خليل","id_number":"D-R 1030"},{"name":"جاسم الخليل","id":"جاسم_خليل","id_number":"D-R 1031"}],"id_number":"D-R 1028","birth":"1993","deceased":false},{"name":"حسن المحمد","id":"حسن_محمد","id_number":"D-R 1032","birth":"1995","deceased":true},{"name":"ذياب المحمد","id":"ذياب_محمد","id_number":"D-R 1033","birth":"1991","deceased":true}],"id_number":"D-R 1008","birth":"1953","deceased":true},{"name":"أحمد الذياب","id":"أحمد_ذياب","children":[{"name":"عبدالهادي الأحمد","id":"عبد_الهادي","children":[{"name":"أحمد العبد الهادي","id":"أحمد_عبد_الهادي","id_number":"D-R 1036"}],"id_number":"D-R 1035","birth":null,"deceased":false},{"name":"محمد الأحمد","id":"محمد_أحمد","children":[{"name":"عبد الهادي المحمد","id":"عبد_الهادي_محمد","id_number":"D-R 1038"},{"name":"خالد المحمد","id":"خالد_أحمد","id_number":"D-R 1039"},{"name":"ماجد المحمد","id":"ماجد","id_number":"D-R 1040"},{"name":"حسن المحمد","id":"حسن_أحمد","id_number":"D-R 1041"}],"id_number":"D-R 1037","birth":"1983","deceased":false},{"name":"ماجد الأحمد","id":"ماجد_أحمد","children":[{"name":"عبد الرحمن الماجد","id":"عبد_الرحمن","id_number":"D-R 1043"},{"name":"راكان الماجد","id":"راكان","id_number":"D-R 1044"}],"id_number":"D-R 1042","birth":"1989","deceased":false},{"name":"خالد الأحمد","id":"خالد_أحمد_ذياب","id_number":"D-R 1045","birth":"1985","deceased":false}],"id_number":"D-R 1034","birth":"1957","deceased":false},{"name":"خالد الذياب","id":"خالد_ذياب","children":[{"name":"سليمان الخالد","id":"سليمان","children":[{"name":"عبدالله السليمان","id":"عبد_الله","children":[],"id_number":"D-R 1048","birth":null,"deceased":false},{"name":"محمود السليمان","id":"محمود_سليمان","id_number":"D-R 1052"}],"id_number":"D-R 1047","birth":"1979","deceased":false},{"name":"فواز الخالد","id":"فواز","children":[{"name":"خالد الفواز","id":"خالد_فواز","id_number":"D-R 1054"},{"name":"يامن الفواز","id":"يامن","id_number":"D-R 1055"},{"name":"سند الفواز","id":"سند","id_number":"D-R 1056"}],"id_number":"D-R 1053","birth":"1986","deceased":false},{"name":"محمد الخالد","id":"محمد_خالد","children":[{"name":"قصي المحمد","id":"قصي","id_number":"D-R 1058"},{"name":"عدي المحمد","id":"عدي","id_number":"D-R 1059"}],"id_number":"D-R 1057","birth":"1990","deceased":false},{"name":"أحمد الخالد","id":"أحمد_خالد","children":[{"name":"أمجد الأحمد","id":"أمجد","id_number":"D-R 1061"}],"id_number":"D-R 1060","birth":"1993","deceased":false},{"name":"محمود الخالد","id":"محمود_خالد","id_number":"D-R 1062","birth":"1996","deceased":true}],"id_number":"D-R 1046","birth":"1960","deceased":true},{"name":"ساير الذياب","id":"ساير","children":[{"name":"ممدوح الساير","id":"ممدوح","children":[{"name":"محمد الممدوح","id":"محمد_ممدوح","id_number":"D-R 1065","birth":"2017","deceased":false},{"name":"علي الممدوح","id":"علي_ممدوح","id_number":"D-R 1066","birth":"2019","deceased":false},{"name":"حمزة الممدوح","id":"حمزة","id_number":"D-R 1067","birth":"2023","deceased":false},{"name":"ساير الممدوح","id":"ساير_ممدوح","id_number":"D-R 1068"}],"id_number":"D-R 1064","birth":"1987","deceased":false},{"name":"أحمد الساير","id":"أحمد_ساير","children":[{"name":"عبيدة الأحمد","id":"عبيدة","id_number":"D-R 1070"},{"name":"ممدوح الأحمد","id":"ممدوح_أحمد","id_number":"D-R 1071"}],"id_number":"D-R 1069","birth":"1996","deceased":false},{"name":"علي الساير","id":"علي_الساير","founder":true,"birth":"1992م","id_number":"D-R 1072"},{"name":"محمد الساير","id":"محمد_ساير","id_number":"D-R 1073","birth":"2000","deceased":false}],"id_number":"D-R 1063","birth":"1963","deceased":true}],"id_number":"D-R 1007","birth":"1935","deceased":true}],"id_number":"D-R 1006","birth":"1915","deceased":true},{"name":"حميد الخليف","id":"حميد","children":[{"name":"خضير الحميد","id":"خضير","children":[{"name":"خالد الخضير","id":"خالد_خضير","children":[{"name":"طه الخالد","id":"طه","id_number":"D-R 1077","children":[{"name":"احمد","id":"n_1777473315086","children":[],"id_number":"D-R 122"},{"name":"عبدالمنعم","id":"n_1777473334983","children":[],"id_number":"D-R 123"}],"birth":"1990","deceased":true},{"name":"خضر الخالد","id":"خضر","id_number":"D-R 1078","birth":"2005","deceased":false,"children":[{"name":"عبدالمنعم","id":"n_1777473359026","children":[],"id_number":"D-R 124"},{"name":"يونس","id":"n_1777473366878","children":[],"id_number":"D-R 125"}]},{"name":"أحمد الخالد","id":"أحمد_خضير","id_number":"D-R 1079","birth":"2007","deceased":false},{"name":"حمزة الخالد","id":"حمزة_خضير","id_number":"D-R 1080","birth":"20000","deceased":false,"children":[{"name":"خالد","id":"n_1777473427920","children":[],"birth":"2020","id_number":"D-R 126"}]}],"id_number":"D-R 1076","birth":null,"deceased":true},{"name":"أحمد الخضير","id":"أحمد_خضير2","children":[{"name":"محمد الأحمد","id":"محمد_خضير","id_number":"D-R 1082","birth":"1999","deceased":false,"children":[{"name":"احمد","id":"n_1777473449878","children":[],"id_number":"D-R 127"},{"name":"حذيفه","id":"n_1777473472913","children":[],"id_number":"D-R 129"}]},{"name":"علي الأحمد","id":"علي_خضير","id_number":"D-R 1083","birth":"2000","deceased":false,"children":[{"name":"عدي","id":"n_1777473466363","children":[],"id_number":"D-R 128"}]},{"name":"عمر الأحمد","id":"عمر_خضير","id_number":"D-R 1084","birth":"2003","deceased":false}],"id_number":"D-R 1081","birth":null,"deceased":true},{"name":"محمد الخضير","id":"محمد_خضير2","children":[{"name":"أحمد المحمد","id":"أحمد_محمد_خضير","id_number":"D-R 1086","birth":"1998","deceased":false,"children":[{"name":"محمد","id":"n_1777473489921","children":[],"birth":"2020","id_number":"D-R 130"}]},{"name":"عبدالرزاق المحمد","id":"عبد_الرزاق","id_number":"D-R 1087","birth":"2006","deceased":false},{"name":"خالد المحمد","id":"خالد_محمد_خضير","id_number":"D-R 1088","birth":"2010","deceased":false}],"id_number":"D-R 1085","birth":null,"deceased":true},{"name":"عبدالمنعم الخضير","id":"عبد_المنعم","id_number":"D-R 1089","birth":null,"deceased":false},{"name":"رضوان الخضير","id":"رضوان","children":[{"name":"يوسف الرضوان","id":"يوسف","id_number":"D-R 1091"},{"name":"خالد الرضوان","id":"خالد_رضوان","id_number":"D-R 1092"},{"name":"علي الرضوان","id":"علي_رضوان","id_number":"D-R 1093"},{"name":"أحمد الرضوان","id":"أحمد_رضوان","id_number":"D-R 1094"},{"name":"محمد الرضوان","id":"محمد_رضوان","id_number":"D-R 1095"}],"id_number":"D-R 1090"},{"name":"مثقال الخضير","id":"مثقال","children":[{"name":"مصطفى المثقال","id":"مصطفى","id_number":"D-R 1097"}],"id_number":"D-R 1096"},{"name":"خليفة الخضير","id":"خليفة","children":[{"name":"عبدالمنعم الخليفة","id":"عبد_المنعم_خليفة","id_number":"D-R 1099","birth":"2008","deceased":false},{"name":"خضر الخليفة","id":"خضر_خليفة","id_number":"D-R 1100"},{"name":"خليفة الخليفة","id":"خليفة_ابن","id_number":"D-R 1101","birth":"2010","deceased":false}],"id_number":"D-R 1098","birth":null,"deceased":true}],"id_number":"D-R 1075","birth":"1919","deceased":true}],"id_number":"D-R 1074","birth":"1910","deceased":true},{"name":"سليمة الخليف","id":"سليمة","children":[{"name":"خليف السليمة","id":"خليف_سليمة","children":[{"name":"محمد الخليف","id":"محمد_خليف2","children":[{"name":"عبدالله المحمد","id":"عبد_الله_خليف","children":[{"name":"خليف العبد الله","id":"خليف_العبد_الله","id_number":"D-R 1106","birth":"2016","deceased":false},{"name":"عمر العبد الله","id":"عمر_العبد_الله","id_number":"D-R 1107"},{"name":"جواد العبد الله","id":"جواد_العبد_الله","id_number":"D-R 1108"}],"id_number":"D-R 1105","birth":"1997","deceased":false},{"name":"بلال المحمد","id":"بلال","children":[{"name":"محمد البلال","id":"محمد_بلال","id_number":"D-R 1110"},{"name":"حمزة البلال","id":"حمزة_بلال","id_number":"D-R 1111"},{"name":"سند البلال","id":"سند_بلال","id_number":"D-R 1112"}],"id_number":"D-R 1109"},{"name":"خليف المحمد","id":"خليف_محمد","id_number":"D-R 1113"},{"name":"أحمد المحمد","id":"أحمد_محمد_خليف","id_number":"D-R 1114"}],"id_number":"D-R 1104"},{"name":"أنور الخليف","id":"أنور","children":[{"name":"محمد الأنور","id":"محمد_أنور","id_number":"D-R 1116"},{"name":"عمر الأنور","id":"عمر_أنور","id_number":"D-R 1117"},{"name":"عمار الأنور","id":"عمار","id_number":"D-R 1118"},{"name":"عدنان الأنور","id":"عدنان","id_number":"D-R 1119"}],"id_number":"D-R 1115"},{"name":"عبدالسلام الخليف","id":"عبد_السلام","children":[{"name":"سليمان العبد السلام","id":"سليمان_العبد_السلام","id_number":"D-R 1121"}],"id_number":"D-R 1120","birth":"1987","deceased":false}],"id_number":"D-R 1103","birth":"1920","deceased":true}],"id_number":"D-R 1102","birth":"1903","deceased":true}],"id_number":"D-R 1005","birth":"1890","deceased":true}],"id_number":"D-R 1001"}
-    </script>
+    <div class="header">
+        <div class="title-group">
+            <span class="main-title">🌳 شجرة الدرواشة</span>
+            <span class="sub-title">قبيلة بني خالد - عشيرة العليان - فخذ الدرواشة</span>
+        </div>
+        <div class="header-buttons">
+            <button class="btn-icon" id="btnStats" title="إحصائيات">📊</button>
+            <button class="btn-icon" id="btnPassword" title="تغيير كلمة السر">🔑</button>
+            <button class="btn-icon" id="btnAddFather" title="إضافة أب للمؤسس">👆</button>
+            <button class="btn-icon" id="toggleManager" title="تفعيل المدير">🔐</button>
+        </div>
+    </div>
 
-    <div class="modal on" id="welcomeModal">
-        <div class="modalbox">
-            <span style="font-size:2.5rem;">🦅</span>
-            <h2>أهلاً بكم</h2>
-            <p class="welcome-text" style="text-align:center;line-height:1.7;font-size:0.85rem;margin-bottom:12px;">
-                مرحباً بك في شجرة الدراوشة من عشيرة العليان بني خالد.<br>
+    <div class="tree-container" id="treeContainer">
+        <div class="tree" id="familyTree"></div>
+    </div>
+
+    <div class="zoom-controls">
+        <button class="zoom-btn" id="zoomInPhone">+</button>
+        <button class="zoom-btn" id="zoomOutPhone">−</button>
+    </div>
+
+    <!-- رسالة ترحيب -->
+    <div class="welcome-overlay active" id="welcomeOverlay">
+        <div class="welcome-card">
+            <div class="welcome-icon">🌴</div>
+            <h2>مرحباً بكم في شجرة الدرواشة</h2>
+            <div class="welcome-text">
                 مؤسس هذه الشجرة<br>
-                <span class="highlight-text">👑 علي ابن ساير ابن ذياب ابن محمد ابن خليف الدرويش 👑</span><br>
-                حفظ الله نسبكم وبارك ذريتكم.
+                <strong>درويش العلياني</strong>
+            </div>
+            <div class="welcome-footer">
+                حفظ الله نسبكم وبارك ذريتكم
+            </div>
+            <button class="btn-close-welcome" onclick="closeWelcome()">🌸 دخول</button>
+        </div>
+    </div>
+
+    <!-- بطاقة تعريفية -->
+    <div class="modal" id="cardModal">
+        <div class="id-card">
+            <button class="close-btn" onclick="closeModal()">✖</button>
+            <div class="card-header">
+                <span class="card-branch">فخذ الدرواشة - العليان - بني خالد</span>
+                <span class="card-id" id="cardRef">D-R 1091</span>
+            </div>
+            <div class="card-body">
+                <div class="field"><span class="field-icon">👤</span><span class="field-label">الاسم:</span><span class="field-value" id="cardName"></span></div>
+                <div class="field"><span class="field-icon">📅</span><span class="field-label">الميلاد:</span><span class="field-value" id="cardBirth"></span></div>
+                <div class="field"><span class="field-icon">⏳</span><span class="field-label">العمر:</span><span class="field-value" id="cardAge"></span></div>
+                <div class="field"><span class="field-icon">💚</span><span class="field-label">الحالة:</span><span class="field-value" id="cardStatus"></span></div>
+            </div>
+            <div class="card-lineage" id="cardLineage"></div>
+            <div class="stamp">🦅 فخذ الدرواشة<br>قبيلة العليان - بني خالد 🦅</div>
+        </div>
+    </div>
+
+    <!-- نموذج إضافة -->
+    <div class="modal" id="formModal">
+        <div class="form-modal">
+            <h3 id="formTitle">إضافة فرد جديد</h3>
+            <label>الاسم</label>
+            <input type="text" id="formName" placeholder="أدخل الاسم">
+            <label>تاريخ الميلاد</label>
+            <input type="text" id="formBirth" placeholder="مثال: 1980">
+            <label>الحالة</label>
+            <select id="formStatus">
+                <option value="حي أطال الله بعمره">حي أطال الله بعمره</option>
+                <option value="متوفى رحمه الله">متوفى رحمه الله</option>
+                <option value="شهيد بإذن الله">شهيد بإذن الله</option>
+            </select>
+            <div class="form-buttons">
+                <button class="btn-save" id="formSubmit">حفظ</button>
+                <button class="btn-cancel" id="formCancel">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة أب -->
+    <div class="modal" id="fatherModal">
+        <div class="form-modal">
+            <h3>👆 إضافة أب للمؤسس</h3>
+            <p style="text-align:center;color:#666;font-size:0.85em;margin-bottom:10px;">
+                سيصبح <strong id="fatherTargetName">درويش العلياني</strong> ابناً للأب الجديد
             </p>
-            <button id="welcomeEnterBtn" style="width:100%;padding:10px;font-weight:bold;">دخول</button>
+            <label>اسم الأب</label>
+            <input type="text" id="fatherNameInput" placeholder="أدخل اسم الأب">
+            <label>تاريخ الميلاد</label>
+            <input type="text" id="fatherBirthInput" placeholder="مثال: 1250">
+            <label>الحالة</label>
+            <select id="fatherStatusInput">
+                <option value="متوفى رحمه الله">متوفى رحمه الله</option>
+                <option value="حي أطال الله بعمره">حي أطال الله بعمره</option>
+                <option value="شهيد بإذن الله">شهيد بإذن الله</option>
+            </select>
+            <div class="form-buttons">
+                <button class="btn-save" id="saveFatherBtn">💾 إضافة الأب</button>
+                <button class="btn-cancel" id="cancelFatherBtn">إلغاء</button>
+            </div>
         </div>
     </div>
 
-    <div class="header-container" id="headerTitle">
-        <div class="title-row">
-            <span class="falcon">🦅</span>
-            <h1>شجرة الدراوشة - عشيرة العليان - بني خالد</h1>
-            <span class="falcon">🦅</span>
+    <!-- نافذة شكل الصندوق -->
+    <div class="modal" id="shapeModal">
+        <div class="form-modal">
+            <h3>🎨 تغيير شكل صندوق</h3>
+            <p style="text-align:center;color:#666;font-size:0.85em;" id="shapeTargetName"></p>
+            <label>اختر الشكل:</label>
+            <select id="shapeSelect">
+                <option value="default">الافتراضي</option>
+                <option value="gold">👑 ذهبي ملكي</option>
+                <option value="jewel">💎 جوهرة</option>
+                <option value="papyrus">📜 ورق بردي</option>
+                <option value="hexagon">⬡ مسدس</option>
+                <option value="knight">⚔️ الفارس</option>
+            </select>
+            <div class="form-buttons">
+                <button class="btn-save" id="saveShapeBtn">💾 حفظ الشكل</button>
+                <button class="btn-cancel" id="cancelShapeBtn">إلغاء</button>
+            </div>
         </div>
     </div>
 
-    <svg id="treeSvg" style="-webkit-tap-highlight-color:rgba(0,0,0,0);"></svg>
-
-    <div class="bottombar">
-        <button id="loginBtn">🔐 تسجيل الدخول</button>
-        <button id="saveBtn" style="display:none;background:#238636;color:white;">💾 حفظ</button>
-        <button id="pdfBtn">📄 PDF</button>
-        <button id="statsBtn">📊 معلومات</button>
-        <button id="themeBtn">🌙 ليلي</button>
-        <button id="resetViewBtn">🔄 إعادة تعيين العرض</button>
-    </div>
-
-    <div class="modal" id="aboutModal">
-        <div class="modalbox" style="text-align:right;">
-            <h2 style="text-align:center;">نبذة (فخذ الدراوشة - عشيرة العليان)</h2>
-            <p class="about-text" style="line-height:1.7;font-size:0.8rem;margin-bottom:10px;"><span class="highlight-text">النسب:</span> تنتسب عشيرة "العليان" إلى قبيلة <span class="highlight-text">بني خالد</span> العريقة إلى بني مخزوم من قريش، وهم جزء أصيل من النسيج الخالدي الذي استقر في بلاد الشام.</p>
-            <p class="about-text" style="line-height:1.7;font-size:0.8rem;margin-bottom:10px;"><span class="highlight-text">المكانة التاريخية:</span> تُعد العليان من العشائر "الحمية" التي حافظت على إرث بني خالد في بادية وريف حمص وحماة.</p>
-            <p class="about-text" style="line-height:1.7;font-size:0.8rem;margin-bottom:10px;"><span class="highlight-text">المآثر والشجاعة:</span> عُرف أبناء العليان بلقب <span class="highlight-text">(أهل الحميّة)</span>، وهم من ركائز القوة الضاربة لقبيلة بني خالد.</p>
-            <button id="closeAboutBtn" style="width:100%;padding:10px;">إغلاق النبذة</button>
+    <!-- نافذة تلوين العائلة -->
+    <div class="modal" id="familyColorModal">
+        <div class="form-modal">
+            <h3>🎨 تلوين الشخص وكل ذريته</h3>
+            <p style="text-align:center;color:#666;font-size:0.85em;" id="familyColorTargetName"></p>
+            <label>اختر اللون:</label>
+            <input type="color" id="familyColorPicker" value="#b7950b">
+            <div class="form-buttons">
+                <button class="btn-save" id="saveFamilyColorBtn">💾 تلوين الكل</button>
+                <button class="btn-cancel" id="cancelFamilyColorBtn">إلغاء</button>
+            </div>
         </div>
     </div>
 
-    <div class="modal" id="adminModal">
-        <div class="modalbox" style="max-width:400px;">
-            <h2 id="nodeNameTitle">خالد المحمد</h2>
-            <input type="text" id="newNameInput" placeholder="تعديل الاسم">
-            <input type="text" id="birthInput" placeholder="تاريخ الميلاد (اختياري)">
-            <select id="statusSelect"><option value="alive">✅ على قيد الحياة</option><option value="deceased">🕊️ متوفي</option></select>
-            <button id="updateNodeBtn" style="width:100%;margin-bottom:8px;background:#d4a574;color:#000;">حفظ التعديلات</button>
-            <input type="text" id="childNameInput" placeholder="إضافة اسم ابن جديد">
-            <div id="childBirthField"><input type="text" id="childBirthInput" placeholder="سنة الميلاد (اختياري)"></div>
-            <button id="addChildBtn" style="width:100%;background:#238636;color:white;">إضافة الابن</button>
-            <button id="deleteNodeBtn" style="width:100%;background:#da3633;color:white;margin-top:10px;">حذف هذا الشخص</button>
-            <button id="closeAdminBtn" style="width:100%;margin-top:8px;background:none;">إلغاء</button>
-        </div>
-    </div>
-
-    <div class="modal" id="loginModal">
-        <div class="modalbox" style="max-width:350px;">
-            <h2>تسجيل الدخول للمدير</h2>
-            <input type="password" id="passCode" placeholder="كلمة المرور">
-            <button id="confirmLoginBtn" style="width:100%;">تأكيد الدخول</button>
-        </div>
-    </div>
-
+    <!-- إحصائيات -->
     <div class="modal" id="statsModal">
-        <div class="modalbox" style="text-align:right;max-width:500px;">
-            <h2 style="text-align:center;">📊 معلومات عامة عن الدراوشة</h2>
-            <div id="statsContent"></div>
-            <button id="closeStatsBtn" style="width:100%;margin-top:10px;">إغلاق</button>
+        <div class="stats-modal">
+            <button class="close-btn" onclick="closeStats()">✖</button>
+            <h3>📊 إحصائيات الدرواشة</h3>
+            <div class="stat-row"><span class="stat-label">عدد الدرواشة الكلي</span><span class="stat-value" id="statTotal"></span></div>
+            <div class="stat-row"><span class="stat-label">عدد الدرواشة فوق 15 سنة</span><span class="stat-value" id="statOver15"></span></div>
+            <div class="stat-row"><span class="stat-label">أكبر شخص حي</span><span class="stat-value" id="statOldest"></span></div>
+            <div class="stat-row"><span class="stat-label">أصغر شخص حي</span><span class="stat-value" id="statYoungest"></span></div>
+            <div class="stat-row"><span class="stat-label">عمر شجرة الدرواشة</span><span class="stat-value" id="statTreeAge"></span></div>
         </div>
     </div>
 
-    <div class="modal" id="identityModal">
-        <div class="modalbox" style="max-width:430px;padding:0;background:transparent;border:none;">
-            <div class="identity-card" id="identityCardContent">
-                <div class="identity-content" id="identityInner"></div>
-            </div>
-            <div class="admin-on-card" id="adminOnCard" style="display:flex;">
-                <button id="btnOpenAdminFromCard" style="background:#d4a574;color:#000;font-weight:bold;font-size:0.65rem;padding:4px 8px;">⚙️ خيارات الإدارة</button>
-            </div>
-            <div style="display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap;">
-                <button id="printIdentityBtn" style="background:#c9a050;color:#000;font-weight:bold;">🖨️ طباعة</button>
-                <button id="copyIdentityBtn">📋 نسخ</button>
-                <button id="shareIdentityBtn">📤 مشاركة</button>
-                <button id="closeIdentityBtn">إغلاق</button>
+    <!-- تغيير كلمة السر -->
+    <div class="modal" id="passwordModal">
+        <div class="password-modal">
+            <button class="close-btn" onclick="closePassword()">✖</button>
+            <h3>🔑 تغيير كلمة سر المدير</h3>
+            <label>كلمة السر القديمة</label>
+            <input type="password" id="oldPassword" placeholder="أدخل كلمة السر القديمة">
+            <label>كلمة السر الجديدة</label>
+            <input type="password" id="newPassword" placeholder="أدخل كلمة السر الجديدة">
+            <div class="form-buttons" style="margin-top:15px;">
+                <button class="btn-save" id="btnSavePassword">حفظ</button>
+                <button class="btn-cancel" onclick="closePassword()">إلغاء</button>
             </div>
         </div>
     </div>
 
     <script>
-        var familyData = JSON.parse(document.getElementById("treeDataBlock").textContent);
+        let managerPassword = localStorage.getItem('managerPassword') || '1234';
 
-        // تعيين الفروع
-        function setBranchRecursive(node, branch) {
-            node.branch = branch;
-            if (node.children) node.children.forEach(c => setBranchRecursive(c, branch));
-        }
-        familyData.children.forEach(child => {
-            const name = child.name;
-            if (name.includes("محيميد")) setBranchRecursive(child, "محيميد");
-            else if (name.includes("حميدو")) setBranchRecursive(child, "حميدو");
-            else if (name.includes("علي")) setBranchRecursive(child, "علي");
-            else if (name.includes("خليف")) setBranchRecursive(child, "خليف");
-        });
-
-        var isAdmin = false, selectedNode = null, highlightedPathIds = [], isLight = false;
-        var currentYear = 2025, rootNode = null;
-
-        var svg = d3.select("#treeSvg"), width = window.innerWidth, height = window.innerHeight;
-        var g = svg.append("g");
-        var zoom = d3.zoom().scaleExtent([0.1, 3]).on("zoom", function(e) { g.attr("transform", e.transform); });
-        svg.call(zoom);
-        svg.call(zoom.transform, d3.zoomIdentity.translate(width/4, height/2).scale(0.6));
-
-        document.getElementById("welcomeModal").classList.add("on");
-
-        function getAncestorIds(node) { var ids = []; var c = node; while(c) { ids.push(c.data.id); c = c.parent; } return ids; }
-
-        function highlightPath(node) {
-            g.selectAll(".node-group").classed("highlight", false);
-            g.selectAll(".link").classed("highlight", false);
-            highlightedPathIds = getAncestorIds(node);
-            g.selectAll(".node-group").each(function(d) {
-                if (highlightedPathIds.includes(d.data.id)) {
-                    d3.select(this).classed("highlight", true);
+        const defaultData = {
+            name: "درويش العلياني",
+            birth: "1280",
+            status: "متوفى رحمه الله",
+            color: "color-root",
+            isRoot: true,
+            branchCode: "D",
+            customShape: "default",
+            familyColor: "",
+            children: [
+                {
+                    name: "خليف الدرويش",
+                    birth: "1320",
+                    status: "متوفى رحمه الله",
+                    color: "color-khulaif",
+                    branchCode: "H",
+                    customShape: "default",
+                    familyColor: "",
+                    children: [
+                        {
+                            name: "محمد الخليف",
+                            birth: "1360",
+                            status: "متوفى رحمه الله",
+                            branchCode: "H",
+                            customShape: "default",
+                            familyColor: "",
+                            children: [
+                                {
+                                    name: "ذياب المحمد",
+                                    birth: "1390",
+                                    status: "حي أطال الله بعمره",
+                                    branchCode: "H",
+                                    customShape: "default",
+                                    familyColor: "",
+                                    children: [
+                                        { name: "محمد الذياب", birth: "1420", status: "حي أطال الله بعمره", branchCode: "H", customShape: "default", familyColor: "" },
+                                        { name: "أحمد الذياب", birth: "1425", status: "حي أطال الله بعمره", branchCode: "H", customShape: "default", familyColor: "" },
+                                        { name: "خالد الذياب", birth: "1430", status: "حي أطال الله بعمره", branchCode: "H", customShape: "default", familyColor: "" },
+                                        { name: "سيار الذياب", birth: "1435", status: "حي أطال الله بعمره", branchCode: "H", customShape: "default", familyColor: "" }
+                                    ]
+                                }
+                            ]
+                        },
+                        { name: "حميد الخليف", birth: "1365", status: "متوفى رحمه الله", branchCode: "H", customShape: "default", familyColor: "" },
+                        { name: "سليمه الخليف", birth: "1370", status: "متوفاه رحمها الله", branchCode: "H", customShape: "default", familyColor: "" }
+                    ]
+                },
+                {
+                    name: "علوش الدرويش",
+                    birth: "1330",
+                    status: "متوفى رحمه الله",
+                    color: "color-aloosh",
+                    branchCode: "A",
+                    customShape: "default",
+                    familyColor: "",
+                    children: []
+                },
+                {
+                    name: "حميد الدرويش",
+                    birth: "1335",
+                    status: "متوفى رحمه الله",
+                    color: "color-hamid",
+                    branchCode: "M",
+                    customShape: "default",
+                    familyColor: "",
+                    children: []
+                },
+                {
+                    name: "حميدو الدرويش",
+                    birth: "1340",
+                    status: "متوفى رحمه الله",
+                    color: "color-hamido",
+                    branchCode: "E",
+                    customShape: "default",
+                    familyColor: "",
+                    children: []
                 }
-            });
-            g.selectAll(".link").each(function(d) {
-                if (highlightedPathIds.includes(d.source.data.id) && highlightedPathIds.includes(d.target.data.id))
-                    d3.select(this).classed("highlight", true);
-            });
-        }
-
-        svg.on("click", function(event) {
-            if (event.target === this || event.target.tagName === 'svg') {
-                g.selectAll(".node-group").classed("highlight", false);
-                g.selectAll(".link").classed("highlight", false);
-                highlightedPathIds = [];
-                selectedNode = null;
-            }
-        });
-
-        const branchColors = {
-            light: { "محيميد": "#1F618D", "حميدو": "#1E8449", "علي": "#7D3C98", "خليف": "#B8860B" },
-            dark:  { "محيميد": "#5DADE2", "حميدو": "#58D68D", "علي": "#AF7AC5", "خليف": "#FFD700" }
+            ]
         };
 
-        function render() {
-            g.selectAll("*").remove();
-            var root = d3.hierarchy(familyData); rootNode = root;
-            d3.tree().nodeSize([70, 200])(root);
+        let rootData = JSON.parse(localStorage.getItem('familyTreeData')) || JSON.parse(JSON.stringify(defaultData));
+        let managerMode = false;
+        let scale = 1, posX = 0, posY = 0;
+        let idCounters = JSON.parse(localStorage.getItem('idCounters')) || { H: 1, A: 1, M: 1, E: 1, D: 1 };
+        let shapeContext = null;
+        let familyColorContext = null;
 
-            g.selectAll(".link")
-                .data(root.links())
-                .enter().append("path")
-                .attr("class", "link")
-                .attr("d", d3.linkHorizontal().x(d => d.y).y(d => d.x));
+        const container = document.getElementById('treeContainer');
+        const tree = document.getElementById('familyTree');
+        const cardModal = document.getElementById('cardModal');
+        const formModal = document.getElementById('formModal');
+        const fatherModal = document.getElementById('fatherModal');
+        const shapeModal = document.getElementById('shapeModal');
+        const familyColorModal = document.getElementById('familyColorModal');
+        const statsModal = document.getElementById('statsModal');
+        const passwordModal = document.getElementById('passwordModal');
+        const formTitle = document.getElementById('formTitle');
+        const formName = document.getElementById('formName');
+        const formBirth = document.getElementById('formBirth');
+        const formStatus = document.getElementById('formStatus');
+        let formContext = null;
 
-            var nodeGroups = g.selectAll(".node-group")
-                .data(root.descendants())
-                .enter().append("g")
-                .attr("class", "node-group")
-                .attr("transform", d => `translate(${d.y},${d.x})`)
-                .on("click", (event, d) => { event.stopPropagation(); handleNodeClick(d); });
-
-            const isLightNow = document.body.classList.contains("light-theme");
-
-            nodeGroups.each(function(d) {
-                const branch = d.data.branch || "خليف";
-                const color = isLightNow ? branchColors.light[branch] : branchColors.dark[branch];
-                const isFounder = d.data.id === "علي_الساير";
-
-                // صندوق رئيسي
-                d3.select(this).append("rect")
-                    .attr("x", -42).attr("y", -18)
-                    .attr("width", 84).attr("height", 36)
-                    .attr("rx", 8).attr("ry", 8)
-                    .attr("fill", isLightNow ? "#ffffff" : "#1e1e2f")
-                    .attr("stroke", color)
-                    .attr("stroke-width", 2.5);
-
-                // شريط جانبي يمين (علامة الفرع)
-                d3.select(this).append("rect")
-                    .attr("x", -42).attr("y", -18)
-                    .attr("width", 5).attr("height", 36)
-                    .attr("rx", 3).attr("ry", 3)
-                    .attr("fill", color);
-
-                // نص الاسم
-                const displayName = (isFounder ? "⭐ " : "") + d.data.name.split(" ")[0];
-                d3.select(this).append("text")
-                    .attr("dy", ".35em")
-                    .attr("text-anchor", "middle")
-                    .attr("fill", isLightNow ? "#1a1a1a" : "#f0f0f0")
-                    .style("font-weight", isFounder ? "bold" : "normal")
-                    .text(displayName);
-            });
-
-            if (selectedNode) highlightPath(selectedNode);
+        function saveData() {
+            localStorage.setItem('familyTreeData', JSON.stringify(rootData));
+            localStorage.setItem('idCounters', JSON.stringify(idCounters));
         }
 
-        function updateThemeColors() {
-            const isLightNow = document.body.classList.contains("light-theme");
-            g.selectAll(".node-group").each(function(d) {
-                const branch = d.data.branch || "خليف";
-                const color = isLightNow ? branchColors.light[branch] : branchColors.dark[branch];
-                d3.select(this).select("rect:first-child")
-                    .attr("fill", isLightNow ? "#ffffff" : "#1e1e2f")
-                    .attr("stroke", color);
-                d3.select(this).select("rect:nth-child(2)").attr("fill", color);
-                d3.select(this).select("text")
-                    .attr("fill", isLightNow ? "#1a1a1a" : "#f0f0f0");
-            });
-            if (selectedNode) highlightPath(selectedNode);
+        function generateID(branchCode) {
+            if (!idCounters[branchCode]) idCounters[branchCode] = 1;
+            const num = String(idCounters[branchCode]).padStart(3, '0');
+            idCounters[branchCode]++;
+            saveData();
+            return `D-${branchCode}${num}`;
         }
 
-        function convertYear(s) { if (!s) return null; if (s.indexOf("هـ")>-1||s.indexOf("ه")>-1) { var m=s.match(/(\d{4})/); if (m) return Math.round(parseInt(m[1])*0.97+622); } var m=s.match(/(\d{4})/); if (m) return parseInt(m[1]); return null; }
-        function extractYear(s) { if (!s) return null; var c=convertYear(s); if (c&&c>=1200&&c<=2100) return c; var ms=s.match(/\d{4}/g); if (!ms) return null; for (var i=0;i<ms.length;i++){ var y=parseInt(ms[i]); if (y>=1200&&y<=2100) return y;} return null; }
-        function calcAge(b,d) { if (!b) return "غير معروف"; if (d) return "متوفي"; var y=extractYear(b); if (!y) return "غير محدد"; var a=currentYear-y; if (a<0) return "تاريخ مستقبلي"; if (a>150) return "غير دقيق"; return "≈ "+a+" سنة"; }
-        function getFullLineageFromNode(n){ var p=[]; var c=n; while(c){ p.push(c.data.name.split(" ")[0]); if (c.depth===0) break; c=c.parent; } return p.join(" بن "); }
-        function getKunya(n){ if (n.data.children&&n.data.children.length>0) return "أبو "+n.data.children[0].name.split(" ")[0]; return ""; }
-        function getGeneration(n){ return n.depth+1; }
-        function findD3NodeById(id){ if (!rootNode) return null; var f=null; rootNode.each(function(d){ if (d.data.id===id) f=d; }); return f; }
-        function getAllPeople(){ var p=[]; function w(n){ p.push(n); if (n.children) n.children.forEach(w); } w(familyData); return p; }
-
-        function showStats(){
-            var all=getAllPeople(), total=all.length, aliveOver15=[];
-            all.forEach(function(p){ if(!p.deceased){ var y=extractYear(p.birth), age=y?currentYear-y:null; if(age!==null && age>0 && age<=150 && age>15) aliveOver15.push({name:p.name,age:age}); } });
-            var sorted=all.filter(p => !p.deceased && extractYear(p.birth)).map(p => ({name:p.name, age:currentYear-extractYear(p.birth), id:p.id})).filter(p => p.age>0 && p.age<=150).sort((a,b) => b.age-a.age);
-            var oldest=sorted.length>0?sorted[0]:null, youngest=sorted.length>0?sorted[sorted.length-1]:null;
-            var html='';
-            html+='<div class="stat-box"><h3>العدد الكامل</h3><div class="stat-row"><span>مجموع الدراوشة:</span><span class="val">'+total+' شخص</span></div></div>';
-            html+='<div class="stat-box"><h3>عدد الدراوشة فوق 15 سنة (أحياء)</h3><div class="stat-row"><span>العدد:</span><span class="val">'+aliveOver15.length+' شخص</span></div></div>';
-            if(oldest){ var oD3=findD3NodeById(oldest.id); html+='<div class="stat-box"><h3>أكبر شخص (حي)</h3><div class="stat-row"><span>الاسم:</span><span class="val">'+oldest.name+'</span></div><div class="stat-row"><span>النسب:</span><span class="val">'+(oD3?getFullLineageFromNode(oD3):'غير معروف')+'</span></div><div class="stat-row"><span>العمر:</span><span class="val">≈ '+oldest.age+' سنة</span></div></div>'; }
-            if(youngest && youngest.id !== (oldest?oldest.id:'')){ var yD3=findD3NodeById(youngest.id); html+='<div class="stat-box"><h3>أصغر شخص (حي)</h3><div class="stat-row"><span>الاسم:</span><span class="val">'+youngest.name+'</span></div><div class="stat-row"><span>النسب:</span><span class="val">'+(yD3?getFullLineageFromNode(yD3):'غير معروف')+'</span></div><div class="stat-row"><span>العمر:</span><span class="val">≈ '+youngest.age+' سنة</span></div></div>'; }
-            document.getElementById("statsContent").innerHTML=html;
-            document.getElementById("statsModal").classList.add("on");
+        function getBranchCode(data, parentData) {
+            if (data.branchCode) return data.branchCode;
+            if (parentData && parentData.branchCode) return parentData.branchCode;
+            return 'D';
         }
 
-        function showIdentityCard(){
-            if (!selectedNode) { alert("الرجاء اختيار شخص من الشجرة أولاً"); return; }
-            var d=selectedNode, html='';
-            html+='<div class="id-header"><div class="id-falcons">🦅 🦅</div><div class="id-title">بطاقة تعريفية خاصة بالدراوشة</div><div class="id-subtitle">فخذ الدراوشة · عشيرة العليان · بني خالد</div></div>';
-            html+='<div class="id-number">⭐ '+(d.data.id_number||'D-R 000')+' ⭐</div>';
-            html+='<div class="id-info-row"><span class="id-info-label">👤 الاسم:</span><span class="id-info-value">'+d.data.name+'</span></div>';
-            var kunya=getKunya(d); if (kunya) html+='<div class="id-info-row"><span class="id-info-label">🏷️ الكنية:</span><span class="id-info-value">'+kunya+'</span></div>';
-            html+='<div class="id-info-row"><span class="id-info-label">📅 الميلاد:</span><span class="id-info-value">'+(d.data.birth||'غير مسجل')+'</span></div>';
-            html+='<div class="id-info-row"><span class="id-info-label">🕒 العمر:</span><span class="id-info-value">'+calcAge(d.data.birth, d.data.deceased)+'</span></div>';
-            html+='<div class="id-info-row"><span class="id-info-label">📋 الحالة:</span><span class="id-info-value">'+(d.data.deceased?'🕊️ متوفي':'✅ على قيد الحياة')+'</span></div>';
-            html+='<div class="id-info-row"><span class="id-info-label">👶 الأبناء:</span><span class="id-info-value">'+(d.data.children?d.data.children.map(c=>c.name.split(" ")[0]).join("، "):'لا يوجد')+'</span></div>';
-            var sib="لا يوجد"; if (d.parent&&d.parent.data&&d.parent.data.children){ var sl=d.parent.data.children.filter(c=>c.id!==d.data.id).map(c=>c.name.split(" ")[0]); if (sl.length>0) sib=sl.join("، "); }
-            html+='<div class="id-info-row"><span class="id-info-label">👥 الإخوة:</span><span class="id-info-value">'+sib+'</span></div>';
-            html+='<div class="id-info-row"><span class="id-info-label">📊 الجيل:</span><span class="id-info-value">الجيل '+getGeneration(d)+' من درويش</span></div>';
-            html+='<div class="id-info-row"><span class="id-info-label">📜 النسب:</span><span class="id-info-value">'+getFullLineageFromNode(d)+'</span></div>';
-            html+='<div class="id-stamp"><div class="stamp-circle">فخذ<br>الدراوشة<br>العليان<br>بني خالد</div></div>';
-            html+='<div class="id-note">⚠️ هذه الهوية خاصة بأفراد فخذ الدراوشة من قبيلة العليان<br>وليست هوية رسمية، إنما هي بطاقة تعريفية للتعارف<br>بين أبناء الفخذ الواحد</div>';
-            document.getElementById("identityInner").innerHTML=html;
-            document.getElementById("adminOnCard").style.display=isAdmin?"flex":"none";
-            document.getElementById("identityModal").classList.add("on");
-        }
-
-        function printIdentityCard(){var card=document.getElementById("identityCardContent");var win=window.open('','','width=450,height=700');win.document.write('<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><link href="https://fonts.googleapis.com/css2?family=Cairo&family=Amiri&display=swap" rel="stylesheet"><style>body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#1a1a1a;margin:0;padding:20px;}</style></head><body>');win.document.write(card.outerHTML);win.document.write('</body></html>');win.document.close();setTimeout(function(){win.print();},500);}
-        function copyIdentityCard(){if(!selectedNode)return;var d=selectedNode;var t='🦅 بطاقة تعريفية خاصة بالدراوشة 🦅\nفخذ الدراوشة · العليان · بني خالد\n'+'⭐ '+(d.data.id_number||'D-R 000')+' ⭐\n👤 '+d.data.name+'\n📅 '+(d.data.birth||'')+'\n📜 '+getFullLineageFromNode(d);if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){alert("تم نسخ البطاقة!");});}else{prompt("انسخ:",t);}}
-        function shareIdentityCard(){if(!selectedNode)return;var d=selectedNode;var t='🦅 '+d.data.name+' - '+(d.data.id_number||'D-R 000')+'\nفخذ الدراوشة\n'+getFullLineageFromNode(d);if(navigator.share){navigator.share({title:'بطاقة الدراوشة',text:t});}else{copyIdentityCard();}}
-
-        function handleNodeClick(d){ selectedNode=d; highlightPath(d); showIdentityCard(); }
-        function openAdminModal(){
-            document.getElementById("identityModal").classList.remove("on");
-            document.getElementById("nodeNameTitle").innerText=selectedNode.data.name;
-            document.getElementById("newNameInput").value=selectedNode.data.name;
-            document.getElementById("birthInput").value=selectedNode.data.birth||"";
-            document.getElementById("statusSelect").value=selectedNode.data.deceased?"deceased":"alive";
-            document.getElementById("adminModal").classList.add("on");
-        }
-        function updateNode(){
-            var n=document.getElementById("newNameInput").value.trim(), b=document.getElementById("birthInput").value.trim(), s=document.getElementById("statusSelect").value;
-            if(n) selectedNode.data.name=n;
-            selectedNode.data.birth=b||null;
-            selectedNode.data.deceased=(s==="deceased");
-            render(); document.getElementById("adminModal").classList.remove("on");
-        }
-        function addChild(){
-            var n=document.getElementById("childNameInput").value.trim(), bv=document.getElementById("childBirthInput")?document.getElementById("childBirthInput").value.trim():"";
-            if(n){
-                if (!selectedNode.data.children) selectedNode.data.children=[];
-                var nc={name:n, id:"n_"+Date.now(), children:[]};
-                if(bv) nc.birth=bv;
-                nc.id_number="D-R "+String(getAllPeople().length+1).padStart(3,'0');
-                selectedNode.data.children.push(nc);
-                document.getElementById("childNameInput").value="";
-                if(document.getElementById("childBirthInput")) document.getElementById("childBirthInput").value="";
-                render(); document.getElementById("adminModal").classList.remove("on");
+        // دالة الحصول على كل الذرية
+        function getAllDescendants(person) {
+            let descendants = [];
+            if (person.children && person.children.length > 0) {
+                for (let child of person.children) {
+                    descendants.push(child);
+                    descendants = descendants.concat(getAllDescendants(child));
+                }
             }
+            return descendants;
         }
-        function deleteNode(){
-            if(confirm("متأكد من حذف هذا الشخص وكل ذريته؟")){
-                var p=selectedNode.parent;
-                if(p&&p.data&&p.data.children){
-                    p.data.children=p.data.children.filter(c=>c!==selectedNode.data);
-                    selectedNode=null; highlightedPathIds=[];
-                    render(); document.getElementById("adminModal").classList.remove("on");
-                } else { alert("لا يمكن حذف المؤسس الرئيسي"); }
+
+        // دالة تحديث لون العائلة في الشجرة
+        function applyFamilyColor(person, color) {
+            person.familyColor = color;
+            const descendants = getAllDescendants(person);
+            descendants.forEach(desc => {
+                desc.familyColor = color;
+            });
+        }
+
+        function closeWelcome() {
+            document.getElementById('welcomeOverlay').classList.remove('active');
+            setTimeout(autoCenter, 300);
+        }
+        window.closeWelcome = closeWelcome;
+        function closeModal() { cardModal.classList.remove('active'); }
+        window.closeModal = closeModal;
+        function closeStats() { statsModal.classList.remove('active'); }
+        window.closeStats = closeStats;
+        function closePassword() { passwordModal.classList.remove('active'); }
+        window.closePassword = closePassword;
+
+        function drawChildrenSVG(childrenDiv, color) {
+            const oldSVG = childrenDiv.querySelector(':scope > .children-svg');
+            if (oldSVG) oldSVG.remove();
+            const branches = childrenDiv.querySelectorAll(':scope > .branch');
+            if (branches.length < 2) return;
+            const childrenRect = childrenDiv.getBoundingClientRect();
+            const firstRect = branches[0].getBoundingClientRect();
+            const lastRect = branches[branches.length - 1].getBoundingClientRect();
+            const x1 = firstRect.left + firstRect.width/2 - childrenRect.left;
+            const x2 = lastRect.left + lastRect.width/2 - childrenRect.left;
+            const y = 2;
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('class', 'children-svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '40');
+            svg.style.position = 'absolute';
+            svg.style.top = '0';
+            svg.style.left = '0';
+            svg.style.pointerEvents = 'none';
+            svg.style.zIndex = '1';
+            let pathD = `M ${x1} ${y} `;
+            for (let i = 1; i < branches.length; i++) {
+                const branchRect = branches[i].getBoundingClientRect();
+                const bx = branchRect.left + branchRect.width/2 - childrenRect.left;
+                pathD += `L ${bx} ${y} `;
             }
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', pathD);
+            path.setAttribute('stroke', color);
+            path.setAttribute('stroke-width', '2');
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke-linecap', 'round');
+            svg.appendChild(path);
+            childrenDiv.appendChild(svg);
         }
 
-        function saveChanges(){ alert("الحفظ المباشر إلى GitHub لم يُفعّل بعد."); }
-        function printPDF(){ var h=document.querySelector('.header-container'), b=document.querySelector('.bottombar'); h.style.display='none'; b.style.display='none'; window.print(); h.style.display=''; b.style.display=''; }
-        function toggleTheme(){
-            isLight=!isLight;
-            document.body.classList.toggle("light-theme");
-            document.getElementById("themeBtn").textContent=isLight?"🌙 ليلي":"☀️ نهاري";
-            updateThemeColors();
+        function drawAllSVG() {
+            const allChildren = tree.querySelectorAll('.children');
+            allChildren.forEach(childrenDiv => {
+                const parentBranch = childrenDiv.closest('.branch');
+                const color = getComputedStyle(parentBranch).getPropertyValue('--branch-color').trim() || '#888';
+                drawChildrenSVG(childrenDiv, color);
+            });
         }
-        function resetView(){
-            svg.call(zoom.transform, d3.zoomIdentity.translate(width/4, height/2).scale(0.6));
-        }
-        function closeModal(id){ document.getElementById(id).classList.remove("on"); }
 
-        document.getElementById("welcomeEnterBtn").addEventListener("click",()=>closeModal('welcomeModal'));
-        document.getElementById("loginBtn").addEventListener("click",()=>document.getElementById("loginModal").classList.add("on"));
-        document.getElementById("saveBtn").addEventListener("click",saveChanges);
-        document.getElementById("pdfBtn").addEventListener("click",printPDF);
-        document.getElementById("statsBtn").addEventListener("click",showStats);
-        document.getElementById("themeBtn").addEventListener("click",toggleTheme);
-        document.getElementById("headerTitle").addEventListener("click",()=>document.getElementById("aboutModal").classList.add("on"));
-        document.getElementById("resetViewBtn").addEventListener("click",resetView);
-        document.getElementById("closeAboutBtn").addEventListener("click",()=>closeModal('aboutModal'));
-        document.getElementById("closeAdminBtn").addEventListener("click",()=>closeModal('adminModal'));
-        document.getElementById("closeStatsBtn").addEventListener("click",()=>closeModal('statsModal'));
-        document.getElementById("closeIdentityBtn").addEventListener("click",()=>closeModal('identityModal'));
-        document.getElementById("confirmLoginBtn").addEventListener("click",()=>{
-            if(document.getElementById("passCode").value==="1234"){
-                isAdmin=true; document.getElementById("saveBtn").style.display="inline-block";
-                closeModal('loginModal'); document.getElementById("passCode").value="";
-            } else { alert("كلمة المرور خاطئة"); }
+        function buildTree(data, inheritedColor = null, parentData = null) {
+            const branch = document.createElement('div');
+            branch.className = 'branch';
+            if (data.children && data.children.length > 0) {
+                branch.classList.add('has-children');
+            }
+            const colorClass = data.color || inheritedColor;
+            if (colorClass) branch.classList.add(colorClass);
+            if (!data._id) {
+                data._id = generateID(getBranchCode(data, parentData));
+            }
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            if (data.isRoot) card.classList.add('card-root-special');
+            // تطبيق الشكل المخصص
+            if (data.customShape && data.customShape !== 'default') {
+                card.classList.add('card-shape-' + data.customShape);
+            }
+            // تطبيق لون العائلة
+            if (data.familyColor) {
+                card.style.borderColor = data.familyColor;
+                card.style.boxShadow = '0 6px 25px ' + data.familyColor + '40';
+            }
+            card.innerHTML = `
+                <div class="name">${data.name}</div>
+                <div class="status-badge">${data.status}</div>
+                <div class="manager-actions">
+                    <button class="add-son">➕ ابن</button>
+                    <button class="edit-card">✏️ تعديل</button>
+                    <button class="btn-shape change-shape">🎨 شكل</button>
+                    <button class="btn-family-color color-family">🌈 تلوين الذرية</button>
+                    <button class="btn-delete delete-card">🗑️ حذف</button>
+                </div>
+            `;
+            card.dataset.name = data.name;
+            card.dataset.birth = data.birth || '';
+            card.dataset.status = data.status || '';
+            card.dataset.id = data._id;
+
+            card.querySelector('.name').addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!managerMode) showCard(card, data);
+            });
+            card.querySelector('.add-son').addEventListener('click', (e) => {
+                e.stopPropagation();
+                openAddForm(branch, data, colorClass);
+            });
+            card.querySelector('.edit-card').addEventListener('click', (e) => {
+                e.stopPropagation();
+                openEditForm(card, data);
+            });
+            card.querySelector('.change-shape').addEventListener('click', (e) => {
+                e.stopPropagation();
+                openShapeModal(card, data);
+            });
+            card.querySelector('.color-family').addEventListener('click', (e) => {
+                e.stopPropagation();
+                openFamilyColorModal(card, data);
+            });
+            card.querySelector('.delete-card').addEventListener('click', (e) => {
+                e.stopPropagation();
+                deletePerson(branch, data);
+            });
+            branch.appendChild(card);
+
+            if (data.children && data.children.length > 0) {
+                const childrenDiv = document.createElement('div');
+                childrenDiv.className = 'children';
+                data.children.forEach(child => {
+                    childrenDiv.appendChild(buildTree(child, colorClass, data));
+                });
+                branch.appendChild(childrenDiv);
+            }
+            return branch;
+        }
+
+        function deletePerson(branchDiv, data) {
+            if (!managerMode) return;
+            if (data.isRoot) { alert('لا يمكن حذف المؤسس'); return; }
+            if (data.children && data.children.length > 0) {
+                alert('لا يمكن حذف شخص لديه أبناء');
+                return;
+            }
+            if (!confirm(`حذف "${data.name}"؟`)) return;
+            function remove(obj, t) {
+                if (obj.children) {
+                    const i = obj.children.findIndex(c => c._id === t._id);
+                    if (i !== -1) { obj.children.splice(i,1); return true; }
+                    for (const c of obj.children) if (remove(c, t)) return true;
+                }
+                return false;
+            }
+            remove(rootData, data);
+            saveData();
+            tree.innerHTML = '';
+            tree.appendChild(buildTree(rootData));
+            setTimeout(drawAllSVG, 200);
+        }
+
+        // ========== نافذة شكل الصندوق ==========
+        function openShapeModal(card, data) {
+            if (!managerMode) return;
+            shapeContext = { card, data };
+            document.getElementById('shapeTargetName').textContent = 'تغيير شكل صندوق: ' + data.name;
+            document.getElementById('shapeSelect').value = data.customShape || 'default';
+            shapeModal.classList.add('active');
+        }
+
+        document.getElementById('saveShapeBtn').addEventListener('click', () => {
+            if (!shapeContext) return;
+            const shape = document.getElementById('shapeSelect').value;
+            shapeContext.data.customShape = shape;
+            // إزالة كلاسات الشكل القديمة
+            const card = shapeContext.card;
+            card.classList.remove('card-shape-gold', 'card-shape-jewel', 'card-shape-papyrus', 'card-shape-hexagon', 'card-shape-knight');
+            if (shape !== 'default') {
+                card.classList.add('card-shape-' + shape);
+            }
+            saveData();
+            shapeModal.classList.remove('active');
+            shapeContext = null;
+            alert('✅ تم تغيير شكل الصندوق');
         });
-        document.getElementById("btnOpenAdminFromCard").addEventListener("click",openAdminModal);
-        document.getElementById("updateNodeBtn").addEventListener("click",updateNode);
-        document.getElementById("addChildBtn").addEventListener("click",addChild);
-        document.getElementById("deleteNodeBtn").addEventListener("click",deleteNode);
-        document.getElementById("printIdentityBtn").addEventListener("click",printIdentityCard);
-        document.getElementById("copyIdentityBtn").addEventListener("click",copyIdentityCard);
-        document.getElementById("shareIdentityBtn").addEventListener("click",shareIdentityCard);
 
-        ["aboutModal","adminModal","loginModal","statsModal","identityModal"].forEach(id=>{
-            document.getElementById(id).addEventListener("click",function(e){ if(e.target===this) closeModal(id); });
+        document.getElementById('cancelShapeBtn').addEventListener('click', () => {
+            shapeModal.classList.remove('active');
+            shapeContext = null;
         });
 
-        render();
+        // ========== نافذة تلوين العائلة ==========
+        function openFamilyColorModal(card, data) {
+            if (!managerMode) return;
+            familyColorContext = { card, data };
+            document.getElementById('familyColorTargetName').textContent = 'تلوين: ' + data.name + ' وكل ذريته';
+            document.getElementById('familyColorPicker').value = data.familyColor || '#b7950b';
+            familyColorModal.classList.add('active');
+        }
+
+        document.getElementById('saveFamilyColorBtn').addEventListener('click', () => {
+            if (!familyColorContext) return;
+            const color = document.getElementById('familyColorPicker').value;
+            const data = familyColorContext.data;
+            applyFamilyColor(data, color);
+            saveData();
+            // إعادة بناء الشجرة
+            tree.innerHTML = '';
+            tree.appendChild(buildTree(rootData));
+            setTimeout(drawAllSVG, 200);
+            familyColorModal.classList.remove('active');
+            familyColorContext = null;
+            const count = getAllDescendants(data).length + 1;
+            alert('✅ تم تلوين ' + data.name + ' وكل ذريته (' + count + ' أشخاص)');
+        });
+
+        document.getElementById('cancelFamilyColorBtn').addEventListener('click', () => {
+            familyColorModal.classList.remove('active');
+            familyColorContext = null;
+        });
+
+        // ========== نافذة إضافة أب ==========
+        document.getElementById('btnAddFather').addEventListener('click', () => {
+            if (!managerMode) { alert('فعل المدير أولاً'); return; }
+            document.getElementById('fatherTargetName').textContent = rootData.name;
+            document.getElementById('fatherNameInput').value = '';
+            document.getElementById('fatherBirthInput').value = '';
+            document.getElementById('fatherStatusInput').value = 'متوفى رحمه الله';
+            fatherModal.classList.add('active');
+        });
+
+        document.getElementById('saveFatherBtn').addEventListener('click', () => {
+            const name = document.getElementById('fatherNameInput').value.trim();
+            if (!name) { alert('أدخل اسم الأب'); return; }
+            const birth = document.getElementById('fatherBirthInput').value.trim();
+            const status = document.getElementById('fatherStatusInput').value;
+            const oldRoot = JSON.parse(JSON.stringify(rootData));
+            oldRoot.isRoot = false;
+            oldRoot.color = oldRoot.color || 'color-root';
+            rootData = {
+                name: name,
+                birth: birth,
+                status: status,
+                isRoot: true,
+                color: 'color-root',
+                branchCode: 'D',
+                customShape: 'default',
+                familyColor: '',
+                children: [oldRoot],
+                _id: generateID('D')
+            };
+            saveData();
+            tree.innerHTML = '';
+            tree.appendChild(buildTree(rootData));
+            setTimeout(drawAllSVG, 200);
+            fatherModal.classList.remove('active');
+            alert('✅ تمت إضافة الأب ' + name + ' وأصبح ' + oldRoot.name + ' ابناً له');
+        });
+
+        document.getElementById('cancelFatherBtn').addEventListener('click', () => {
+            fatherModal.classList.remove('active');
+        });
+
+        function openAddForm(parentBranchDiv, parentData, parentColor) {
+            if (!managerMode) return;
+            formContext = { type: 'add', parentBranchDiv, parentData, parentColor };
+            formTitle.textContent = 'إضافة ابن / بنت';
+            formName.value = ''; formBirth.value = ''; formStatus.value = 'حي أطال الله بعمره';
+            formModal.classList.add('active'); formName.focus();
+        }
+        function openEditForm(card, data) {
+            if (!managerMode) return;
+            formContext = { type: 'edit', card, data };
+            formTitle.textContent = 'تعديل بيانات';
+            formName.value = data.name || ''; formBirth.value = data.birth || ''; formStatus.value = data.status || 'حي أطال الله بعمره';
+            formModal.classList.add('active'); formName.focus();
+        }
+
+        function submitForm() {
+            if (!formContext) return;
+            const name = formName.value.trim();
+            if (!name) { alert('أدخل الاسم'); return; }
+            const birth = formBirth.value.trim();
+            const status = formStatus.value;
+            if (formContext.type === 'add') {
+                const { parentBranchDiv, parentData, parentColor } = formContext;
+                const bc = getBranchCode({}, parentData);
+                const newC = { name, birth, status, children: [], branchCode: bc, _id: generateID(bc), customShape: 'default', familyColor: '' };
+                if (!parentData.children) parentData.children = [];
+                parentData.children.push(newC);
+                saveData();
+                const nb = buildTree(newC, parentColor, parentData);
+                let cd = parentBranchDiv.querySelector(':scope > .children');
+                if (!cd) {
+                    cd = document.createElement('div'); cd.className = 'children';
+                    parentBranchDiv.appendChild(cd);
+                    parentBranchDiv.classList.add('has-children');
+                }
+                cd.appendChild(nb);
+            } else {
+                const { card, data } = formContext;
+                data.name = name; data.birth = birth; data.status = status;
+                card.querySelector('.name').textContent = name;
+                card.dataset.name = name; card.dataset.birth = birth; card.dataset.status = status;
+                card.querySelector('.status-badge').textContent = status;
+                saveData();
+            }
+            formModal.classList.remove('active');
+            formContext = null;
+            setTimeout(drawAllSVG, 100);
+        }
+
+        document.getElementById('formSubmit').addEventListener('click', submitForm);
+        document.getElementById('formCancel').addEventListener('click', () => { formModal.classList.remove('active'); formContext = null; });
+
+        function showCard(cardElement, data) {
+            document.getElementById('cardName').textContent = data.name;
+            document.getElementById('cardBirth').textContent = data.birth || 'غير مسجل';
+            let age = 'غير معروف';
+            if (data.birth) {
+                const m = data.birth.match(/(\d{4})/);
+                if (m) {
+                    const by = parseInt(m[1]), cy = new Date().getFullYear();
+                    age = by > 1000 && by <= cy ? (cy - by) + ' سنة' : by > 1300 ? (cy - by) + ' سنة (هـ)' : 'غير معروف';
+                }
+            }
+            document.getElementById('cardAge').textContent = age;
+            document.getElementById('cardStatus').textContent = data.status;
+
+            let lineage = data.name;
+            let allAncestors = [];
+            function collectPath(obj, target, path) {
+                if (obj._id === target._id) {
+                    allAncestors = [...path];
+                    return true;
+                }
+                if (obj.children) {
+                    for (const child of obj.children) {
+                        path.push(obj);
+                        if (collectPath(child, target, path)) return true;
+                        path.pop();
+                    }
+                }
+                return false;
+            }
+            collectPath(rootData, data, []);
+
+            for (let i = allAncestors.length - 1; i >= 0; i--) {
+                const anc = allAncestors[i];
+                const firstName = anc.name.split(' ')[0];
+                lineage = firstName + ' بن ' + lineage;
+            }
+
+            document.getElementById('cardLineage').textContent = 'النسب: ' + lineage;
+            document.getElementById('cardRef').textContent = data._id || 'D-R 0000';
+            cardModal.classList.add('active');
+        }
+
+        // ========== إحصائيات ==========
+        function showStats() {
+            const all = [];
+            function collect(o) { all.push(o); if (o.children) o.children.forEach(c => collect(c)); }
+            collect(rootData);
+            const total = all.length;
+            const cy = new Date().getFullYear();
+            let over15 = 0, oldest = null, youngest = null;
+            const living = all.filter(p => p.status.includes('حي'));
+            living.forEach(p => {
+                if (p.birth) {
+                    const m = p.birth.match(/(\d{4})/);
+                    if (m) {
+                        const by = parseInt(m[1]), ag = cy - by;
+                        if (ag >= 15) over15++;
+                        if (!oldest || (oldest.birth && parseInt(oldest.birth.match(/(\d{4})/)[1]) > by)) oldest = p;
+                        if (!youngest || (youngest.birth && parseInt(youngest.birth.match(/(\d{4})/)[1]) < by)) youngest = p;
+                    }
+                }
+            });
+            let treeAge = 'غير معروف';
+            if (rootData.birth && youngest && youngest.birth) {
+                const rm = rootData.birth.match(/(\d{4})/), ym = youngest.birth.match(/(\d{4})/);
+                if (rm && ym) treeAge = (parseInt(ym[1]) - parseInt(rm[1])) + ' سنة';
+            }
+            document.getElementById('statTotal').textContent = total + ' فرد';
+            document.getElementById('statOver15').textContent = over15 + ' فرد';
+            document.getElementById('statOldest').textContent = oldest ? oldest.name + ' (' + oldest.birth + ')' : '-';
+            document.getElementById('statYoungest').textContent = youngest ? youngest.name + ' (' + youngest.birth + ')' : '-';
+            document.getElementById('statTreeAge').textContent = treeAge;
+            statsModal.classList.add('active');
+        }
+        document.getElementById('btnStats').addEventListener('click', showStats);
+
+        // ========== تغيير كلمة السر ==========
+        document.getElementById('btnPassword').addEventListener('click', () => {
+            if (!managerMode) { alert('فعل المدير أولاً'); return; }
+            document.getElementById('oldPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            passwordModal.classList.add('active');
+        });
+        document.getElementById('btnSavePassword').addEventListener('click', () => {
+            const op = document.getElementById('oldPassword').value;
+            const np = document.getElementById('newPassword').value;
+            if (!op || !np) { alert('أدخل كلمتي السر'); return; }
+            if (op !== managerPassword) { alert('كلمة السر القديمة خاطئة'); return; }
+            managerPassword = np;
+            localStorage.setItem('managerPassword', managerPassword);
+            alert('تم التغيير');
+            passwordModal.classList.remove('active');
+        });
+
+        // ========== مدير ==========
+        document.getElementById('toggleManager').addEventListener('click', () => {
+            if (!managerMode) {
+                const p = prompt('كلمة سر المدير:');
+                if (p === managerPassword) {
+                    managerMode = true;
+                    document.body.classList.add('show-manager');
+                    document.getElementById('toggleManager').textContent = '🔓';
+                } else alert('خطأ');
+            } else {
+                managerMode = false;
+                document.body.classList.remove('show-manager');
+                document.getElementById('toggleManager').textContent = '🔐';
+            }
+        });
+
+        // ========== زووم وسحب ==========
+        function setTransform() { tree.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
+        function zoomIn() { scale = Math.min(scale * 1.3, 3); setTransform(); }
+        function zoomOut() { scale = Math.max(scale / 1.3, 0.3); setTransform(); }
+        document.getElementById('zoomInPhone').addEventListener('click', zoomIn);
+        document.getElementById('zoomOutPhone').addEventListener('click', zoomOut);
+
+        container.addEventListener('wheel', e => {
+            e.preventDefault();
+            const d = e.deltaY > 0 ? -0.1 : 0.1;
+            const ns = Math.min(Math.max(scale + d, 0.3), 3);
+            const r = container.getBoundingClientRect();
+            const mx = e.clientX - r.left, my = e.clientY - r.top;
+            const f = ns / scale;
+            posX = mx - (mx - posX) * f;
+            posY = my - (my - posY) * f;
+            scale = ns;
+            setTransform();
+        }, { passive: false });
+
+        let dragging = false, sx, sy, spx, spy;
+        container.addEventListener('mousedown', e => {
+            if (e.target.closest('.card, button')) return;
+            dragging = true; sx = e.clientX; sy = e.clientY; spx = posX; spy = posY;
+            container.style.cursor = 'grabbing';
+        });
+        window.addEventListener('mousemove', e => {
+            if (!dragging) return;
+            posX = spx + e.clientX - sx; posY = spy + e.clientY - sy; setTransform();
+        });
+        window.addEventListener('mouseup', () => { dragging = false; container.style.cursor = 'grab'; });
+
+        container.addEventListener('touchstart', e => {
+            if (e.touches.length === 1 && !e.target.closest('.card, button')) {
+                dragging = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY; spx = posX; spy = posY;
+            }
+        }, { passive: false });
+        window.addEventListener('touchmove', e => {
+            if (!dragging || e.touches.length !== 1) return;
+            posX = spx + e.touches[0].clientX - sx; posY = spy + e.touches[0].clientY - sy; setTransform();
+        }, { passive: false });
+        window.addEventListener('touchend', () => { dragging = false; });
+
+        function autoCenter() {
+            const cr = container.getBoundingClientRect();
+            const tr = tree.getBoundingClientRect();
+            posX = (cr.width/2) - (tr.width/2);
+            posY = (cr.height/2) - (tr.height/2);
+            scale = window.innerWidth < 768 ? 0.7 : 1;
+            setTransform();
+        }
+
+        tree.appendChild(buildTree(rootData));
+        setTimeout(() => { drawAllSVG(); autoCenter(); }, 500);
     </script>
 </body>
 </html>
