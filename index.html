@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=3.0, minimum-scale=0.3">
+    <title>شجرة الدرواشة - عشيرة العليان</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="title-group">
+            <span class="main-title">🌳 شجرة الدرواشة</span>
+            <span class="sub-title">قبيلة بني خالد - عشيرة العليان - فخذ الدرواشة</span>
+        </div>
+        <div class="header-buttons" id="headerButtons">
+            <button class="btn-icon" id="toggleManager" title="تسجيل الدخول">🔐</button>
+        </div>
+    </div>
+
+    <div class="tree-container" id="treeContainer">
+        <div class="tree" id="familyTree"></div>
+        <div class="mini-map" id="miniMap" style="display:none;"></div>
+    </div>
+
+    <div class="welcome-overlay active" id="welcomeOverlay">
+        <div class="welcome-card" id="welcomeMessage"></div>
+        <button class="btn-close-welcome" id="closeWelcomeBtn">🌸 دخول</button>
+    </div>
+
+    <div class="modal" id="loginModal">
+        <div class="form-modal">
+            <h3>🔐 تسجيل دخول</h3>
+            <label>كلمة المرور</label>
+            <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور">
+            <div class="form-buttons">
+                <button class="btn-save" id="confirmLogin">🔓 دخول</button>
+                <button class="btn-cancel" id="cancelLogin">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="cardModal">
+        <div class="id-card-new">
+            <button class="close-btn" onclick="document.getElementById('cardModal').classList.remove('active')">✖</button>
+            <div class="id-header">
+                <div class="id-falcons">🦅 🦅</div>
+                <div class="id-title">بطاقة تعريفية خاصة بالدراوشة</div>
+                <div class="id-subtitle">فخذ الدراوشة · عشيرة العليان · بني خالد</div>
+            </div>
+            <div class="id-number" id="cardIdNumber"></div>
+            <div class="id-row"><span class="id-label">👤 الاسم:</span><span class="id-value" id="cardName"></span></div>
+            <div class="id-row"><span class="id-label">🏷️ الكنية:</span><span class="id-value" id="cardNickname"></span></div>
+            <div class="id-row"><span class="id-label">📅 الميلاد:</span><span class="id-value" id="cardBirth"></span></div>
+            <div class="id-row"><span class="id-label">⏳ العمر:</span><span class="id-value" id="cardAge"></span></div>
+            <div class="id-row"><span class="id-label">💚 الحالة:</span><span class="id-value" id="cardStatus"></span></div>
+            <div class="id-siblings"><strong>👬 الإخوة:</strong> <span id="cardSiblings"></span></div>
+            <div class="id-lineage" id="cardLineage"></div>
+            <div class="id-generation" id="cardGeneration"></div>
+            <div class="id-stamp"><div class="stamp-circle">فخذ<br>الدراوشة<br>العليان<br>بني خالد</div></div>
+            <div class="id-footer">
+                ⚠️ هذه الهوية خاصة بأفراد فخذ الدراوشة من قبيلة العليان<br>
+                وليست هوية رسمية، إنما هي بطاقة تعريفية للتعارف<br>
+                بين أبناء الفخذ الواحد
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="formModal">
+        <div class="form-modal">
+            <h3 id="formTitle">إضافة فرد جديد</h3>
+            <label>الاسم</label>
+            <input type="text" id="formName" placeholder="أدخل الاسم">
+            <label>تاريخ الميلاد</label>
+            <input type="text" id="formBirth" placeholder="مثال: 1980">
+            <label>الحالة</label>
+            <select id="formStatus">
+                <option value="حي أطال الله بعمره">حي أطال الله بعمره</option>
+                <option value="متوفى رحمه الله">متوفى رحمه الله</option>
+                <option value="شهيد بإذن الله">شهيد بإذن الله</option>
+            </select>
+            <div class="form-buttons">
+                <button class="btn-save" id="formSubmit">حفظ</button>
+                <button class="btn-cancel" id="formCancel">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="fatherModal">
+        <div class="form-modal">
+            <h3>👆 إضافة أب للمؤسس</h3>
+            <p style="text-align:center;color:#666;font-size:0.85em;margin-bottom:10px;">
+                سيصبح <strong id="fatherTargetName">درويش العلياني</strong> ابناً للأب الجديد
+            </p>
+            <label>اسم الأب</label>
+            <input type="text" id="fatherNameInput" placeholder="أدخل اسم الأب">
+            <label>تاريخ الميلاد</label>
+            <input type="text" id="fatherBirthInput" placeholder="مثال: 1250">
+            <label>الحالة</label>
+            <select id="fatherStatusInput">
+                <option value="متوفى رحمه الله">متوفى رحمه الله</option>
+                <option value="حي أطال الله بعمره">حي أطال الله بعمره</option>
+                <option value="شهيد بإذن الله">شهيد بإذن الله</option>
+            </select>
+            <div class="form-buttons">
+                <button class="btn-save" id="saveFatherBtn">💾 إضافة الأب</button>
+                <button class="btn-cancel" id="cancelFatherBtn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="shapeModal">
+        <div class="form-modal">
+            <h3>🎨 تغيير شكل صندوق</h3>
+            <p style="text-align:center;color:#666;font-size:0.85em;" id="shapeTargetName"></p>
+            <label>اختر الشكل:</label>
+            <select id="shapeSelect">
+                <option value="default">الافتراضي</option>
+                <option value="gold">👑 ذهبي ملكي</option>
+                <option value="jewel">💎 جوهرة</option>
+                <option value="papyrus">📜 ورق بردي</option>
+                <option value="hexagon">⬡ مسدس</option>
+                <option value="knight">⚔️ الفارس</option>
+            </select>
+            <div class="form-buttons">
+                <button class="btn-save" id="saveShapeBtn">💾 حفظ الشكل</button>
+                <button class="btn-cancel" id="cancelShapeBtn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="familyColorModal">
+        <div class="form-modal">
+            <h3>🎨 تلوين الشخص وكل ذريته</h3>
+            <p style="text-align:center;color:#666;font-size:0.85em;" id="familyColorTargetName"></p>
+            <label>اختر اللون:</label>
+            <input type="color" id="familyColorPicker" value="#b7950b">
+            <div class="form-buttons">
+                <button class="btn-save" id="saveFamilyColorBtn">💾 تلوين الكل</button>
+                <button class="btn-cancel" id="cancelFamilyColorBtn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="statsModal">
+        <div class="form-modal" style="width:340px;text-align:center;">
+            <button class="close-btn" onclick="document.getElementById('statsModal').classList.remove('active')" style="position:absolute;top:10px;left:12px;background:none;border:none;font-size:1.4em;cursor:pointer;">✖</button>
+            <h3>📊 إحصائيات الدرواشة</h3>
+            <div class="stat-row"><span class="stat-label">عدد الدرواشة الكلي</span><span class="stat-value" id="statTotal"></span></div>
+            <div class="stat-row"><span class="stat-label">عدد الدرواشة فوق 15 سنة</span><span class="stat-value" id="statOver15"></span></div>
+            <div class="stat-row"><span class="stat-label">أكبر شخص حي</span><span class="stat-value" id="statOldest"></span></div>
+            <div class="stat-row"><span class="stat-label">أصغر شخص حي</span><span class="stat-value" id="statYoungest"></span></div>
+            <div class="stat-row"><span class="stat-label">عمر شجرة الدرواشة</span><span class="stat-value" id="statTreeAge"></span></div>
+        </div>
+    </div>
+
+    <div class="modal" id="shuraModal">
+        <div class="shura-panel">
+            <button class="close-btn" onclick="document.getElementById('shuraModal').classList.remove('active')">✖</button>
+            <h2>🏛️ مجلس شورى فخذ الدرواشة</h2>
+            <section>
+                <h3>📋 المناصب القيادية</h3>
+                <div id="positionsContainer"></div>
+                <button class="btn-gold" id="addPositionBtn">➕ إضافة منصب</button>
+            </section>
+            <section>
+                <h3>👂 أعضاء مستمعين (بدون تصويت)</h3>
+                <div id="listenersContainer"></div>
+                <button class="btn-gold" id="addListenerBtn">➕ إضافة مستمع</button>
+            </section>
+            <section>
+                <h3>📜 قرارات المجلس</h3>
+                <div id="decisionsContainer"></div>
+                <button class="btn-gold" id="addDecisionBtn">➕ إضافة قرار</button>
+            </section>
+        </div>
+    </div>
+
+    <div class="modal" id="decisionModal">
+        <div class="form-modal">
+            <button class="close-btn" onclick="document.getElementById('decisionModal').classList.remove('active')" style="position:absolute;top:10px;left:12px;background:none;border:none;font-size:1.4em;cursor:pointer;">✖</button>
+            <h3>📜 إضافة قرار جديد</h3>
+            <label>نص القرار</label>
+            <textarea id="decisionText" rows="3" placeholder="أدخل القرار..."></textarea>
+            <label>الفخذ المعني</label>
+            <select id="decisionBranch">
+                <option value="خليف">خليف</option>
+                <option value="علوش">علوش</option>
+                <option value="محيميد">محيميد</option>
+                <option value="حميدو">حميدو</option>
+                <option value="عام">عام (كل الفخذ)</option>
+            </select>
+            <label>عدد الأعضاء المصوتين</label>
+            <input type="number" id="totalVoters" value="9" min="1">
+            <label>عدد الموافقين</label>
+            <input type="number" id="yesVotes" value="6" min="0">
+            <button class="btn-gold" id="saveDecisionBtn">💾 حفظ القرار</button>
+        </div>
+    </div>
+
+    <input type="file" id="restoreFileInput" style="display:none" accept=".json">
+
+    <script src="js/data.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/manager.js"></script>
+    <script src="js/plugins/save-html.js"></script>
+    <script src="js/plugins/save-json.js"></script>
+    <script src="js/plugins/import-json.js"></script>
+    <script src="js/plugins/shura-council.js"></script>
+    <script src="js/plugins/mini-map.js"></script>
+    <script src="js/plugins/search.js"></script>
+    <script src="js/plugins/reset.js"></script>
+</body>
+</html>
