@@ -506,4 +506,4 @@ var TreeCore = (function () {
     openEditForm: openEditForm,
     deletePerson: deletePerson
   };
-})();
+})();.
