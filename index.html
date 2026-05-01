@@ -1,154 +1,70 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=3.0, minimum-scale=0.3">
-    <title>شجرة الدرواشة - عشيرة العليان</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #e8f4f8, #f0f8ff, #e6f0fa, #ffffff);
-            background-size: 400% 400%; animation: bgMove 20s ease infinite;
-            color: #2c3e50; height: 100vh; width: 100vw; overflow: hidden;
-            display: flex; flex-direction: column; align-items: center;
-            touch-action: manipulation; position: relative;
-        }
-        @keyframes bgMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .header {
-            width: 100%; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between;
-            z-index: 10; position: relative;
-        }
-        .title-group { display: flex; flex-direction: column; align-items: flex-start; }
-        .main-title { font-size: 1.2em; font-weight: bold; background: linear-gradient(45deg, #1a5276, #2e86c1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .sub-title { font-size: 0.75em; background: linear-gradient(45deg, #1a5276, #2e86c1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; opacity: 0.8; }
-        .tree-container {
-            flex: 1; width: 100%; overflow: hidden; position: relative; cursor: grab; z-index: 1;
-            touch-action: pan-x pan-y pinch-zoom;
-        }
-        .tree {
-            position: absolute; top: 50%; left: 50%; transform-origin: 0 0;
-            display: flex; flex-direction: column; align-items: center; padding: 40px; will-change: transform;
-        }
-        .branch { display: flex; flex-direction: column; align-items: center; position: relative; }
-        .branch.has-children > .card { margin-bottom: 40px; }
-        .card {
-            background: rgba(255,255,255,0.75); backdrop-filter: blur(15px);
-            border: 2px solid rgba(52,152,219,0.2); border-radius: 18px; padding: 14px 24px;
-            text-align: center; min-width: 130px; transition: 0.3s; box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            position: relative; z-index: 2; border-color: var(--branch-color, rgba(52,152,219,0.3));
-        }
-        .card .name { font-size: 1em; font-weight: bold; color: var(--branch-color, #2c3e50); white-space: nowrap; }
-        .card .status-badge { font-size: 0.7em; opacity: 0.7; margin-top: 4px; color: #555; }
-        .card.card-root-special {
-            background: linear-gradient(135deg, #fff9e6, #ffedb3); border: 3px solid #f0a500;
-            box-shadow: 0 0 0 5px rgba(240,165,0,0.15); border-radius: 24px; padding: 18px 32px;
-        }
-        /* ألوان الفروع */
-        .color-root > .card { --branch-color: #b7950b; }
-        .color-khulaif > .card { --branch-color: #e67e22; }
-        .color-aloosh > .card { --branch-color: #27ae60; }
-        .color-hamid > .card { --branch-color: #2980b9; }
-        .color-hamido > .card { --branch-color: #c0392b; }
-        /* خطوط الربط */
-        .branch.has-children > .card::after {
-            content: ''; position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
-            width: 2px; height: 40px; background: var(--branch-color); opacity: 0.5;
-        }
-        .children {
-            display: flex; flex-direction: row; justify-content: center; gap: 20px;
-            position: relative; padding-top: 40px;
-        }
-        .children > .branch::after {
-            content: ''; position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
-            width: 2px; height: 40px; background: var(--branch-color); opacity: 0.5;
-        }
-    </style>
-</head>
-<body>
+// core.js - نواة شجرة الدرواشة
+var TreeCore = (function() {
+  var rootData = {};
+  var treeContainer, treeElement;
 
-    <div class="header">
-        <div class="title-group">
-            <span class="main-title">🌳 شجرة الدرواشة</span>
-            <span class="sub-title">قبيلة بني خالد - عشيرة العليان - فخذ الدرواشة</span>
-        </div>
-        <!-- سنضيف الأزرار لاحقًا -->
-    </div>
+  function buildTree(data, parentData) {
+    var branch = document.createElement('div');
+    branch.className = 'branch';
+    if (data.children && data.children.length) branch.classList.add('has-children');
 
-    <div class="tree-container" id="treeContainer">
-        <div class="tree" id="familyTree"></div>
-    </div>
+    if (data.color) branch.classList.add(data.color);
 
-    <!-- ملفات JavaScript -->
-    <script src="data.js"></script>
-    <script src="core.js"></script>
-    <script>
-        // تشغيل النواة
-        TreeCore.init('treeContainer', 'familyTree');
+    var card = document.createElement('div');
+    card.className = 'card';
+    if (data.isRoot) card.classList.add('card-root-special');
+    if (data.customShape && data.customShape !== 'default') card.classList.add('card-shape-' + data.customShape);
+    if (data.familyColor) {
+      card.style.borderColor = data.familyColor;
+      card.style.boxShadow = '0 6px 25px ' + data.familyColor + '40';
+    }
 
-        // ---- التكبير والتحريك (نفس الكود السابق) ----
-        var container = document.getElementById('treeContainer');
-        var tree = document.getElementById('familyTree');
-        var scale = 1, posX = 0, posY = 0;
-        function setTransform() { tree.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`; }
+    var displayName = data.displayName || data.name;
 
-        // Pinch Zoom
-        var initialDist = 0, initialScale = 1;
-        var dragging = false, sx, sy, spx, spy;
-        container.addEventListener('touchstart', function(e) {
-            if (e.touches.length === 2) {
-                e.preventDefault();
-                initialDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-                initialScale = scale;
-            } else if (e.touches.length === 1 && !e.target.closest('.card')) {
-                dragging = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY; spx = posX; spy = posY;
-            }
-        }, { passive: false });
-        container.addEventListener('touchmove', function(e) {
-            if (e.touches.length === 2) {
-                e.preventDefault();
-                var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-                if (initialDist > 0) {
-                    var ns = Math.min(3, Math.max(0.3, initialScale * (d / initialDist)));
-                    var r = container.getBoundingClientRect();
-                    var mx = (e.touches[0].clientX + e.touches[1].clientX)/2 - r.left;
-                    var my = (e.touches[0].clientY + e.touches[1].clientY)/2 - r.top;
-                    var f = ns / scale;
-                    posX = mx - (mx - posX) * f; posY = my - (my - posY) * f; scale = ns;
-                    setTransform();
-                }
-            } else if (dragging) {
-                posX = spx + e.touches[0].clientX - sx; posY = spy + e.touches[0].clientY - sy;
-                setTransform();
-            }
-        }, { passive: false });
-        container.addEventListener('touchend', function() { initialDist = 0; dragging = false; });
+    card.innerHTML = '<div class="name">' + displayName + '</div>' +
+                     '<div class="status-badge">' + (data.status || '') + '</div>';
 
-        // سحب بالفأرة
-        container.addEventListener('mousedown', function(e) {
-            if (e.target.closest('.card')) return;
-            dragging = true; sx = e.clientX; sy = e.clientY; spx = posX; spy = posY;
-            container.style.cursor = 'grabbing';
-        });
-        window.addEventListener('mousemove', function(e) {
-            if (!dragging) return;
-            posX = spx + e.clientX - sx; posY = spy + e.clientY - sy; setTransform();
-        });
-        window.addEventListener('mouseup', function() { dragging = false; container.style.cursor = 'grab'; });
+    branch.appendChild(card);
 
-        // التوسيط الأولي
-        setTimeout(function() {
-            var cr = container.getBoundingClientRect();
-            var tr = tree.getBoundingClientRect();
-            posX = (cr.width/2) - (tr.width/2);
-            posY = (cr.height/2) - (tr.height/2);
-            scale = window.innerWidth < 768 ? 0.7 : 1;
-            setTransform();
-        }, 400);
-    </script>
-</body>
-</html>
+    if (data.children && data.children.length) {
+      var childrenDiv = document.createElement('div');
+      childrenDiv.className = 'children';
+      data.children.forEach(function(child) {
+        childrenDiv.appendChild(buildTree(child, data));
+      });
+      branch.appendChild(childrenDiv);
+    }
+
+    return branch;
+  }
+
+  function rebuildTree() {
+    if (!treeElement) return;
+    treeElement.innerHTML = '';
+    treeElement.appendChild(buildTree(rootData));
+  }
+
+  return {
+    init: function(containerId, treeId) {
+      if (typeof LOCAL_DATA !== 'undefined') {
+        rootData = LOCAL_DATA;
+      } else {
+        var saved = localStorage.getItem('familyTreeData');
+        rootData = saved ? JSON.parse(saved) : null;
+      }
+      if (!rootData) {
+        rootData = { name: "درويش العلياني", isRoot: true, children: [] };
+      }
+
+      treeContainer = document.getElementById(containerId);
+      treeElement = document.getElementById(treeId);
+      rebuildTree();
+      console.log('✅ النواة جاهزة');
+    },
+    getRootData: function() { return rootData; },
+    saveData: function() {
+      localStorage.setItem('familyTreeData', JSON.stringify(rootData));
+    },
+    rebuildTree: function() { rebuildTree(); }
+  };
+})();
