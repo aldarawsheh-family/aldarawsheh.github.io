@@ -116,4 +116,4 @@ var TreeManager = (function() {
     changePassword: changePassword,
     getPasswords: function() { return passwords; }
   };
-})();
+})();.
