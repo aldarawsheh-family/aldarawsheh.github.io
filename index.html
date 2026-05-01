@@ -209,5 +209,15 @@
     <script src="js/plugins/mini-map.js"></script>
     <script src="js/plugins/search.js"></script>
     <script src="js/plugins/reset.js"></script>
+<script>
+  // تشغيل النواة (بناء الشجرة)
+  TreeCore.init('treeContainer', 'familyTree');
+
+  // تشغيل نظام المدير والصلاحيات
+  TreeManager.init();
+
+  // المكونات الأخرى (الخريطة المصغرة، البحث، إعادة التعيين)
+  // كل ملف plugin مسؤول عن نفسه ويُشغّل تلقائياً عند تحميله.
+</script>
 </body>
 </html>
