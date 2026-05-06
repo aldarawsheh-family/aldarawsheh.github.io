@@ -1723,5 +1723,24 @@ function zoomToDرويش() {
 if('serviceWorker' in navigator){
     navigator.serviceWorker.register('data:application/javascript;base64,dmFyIENBQ0hFPW5ldyBNYXAoKTtzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2luc3RhbGwnLGZ1bmN0aW9uKGUpe2Uud2FpdFVudGlsKHNlbGYuc2tpcFdhaXRpbmcoKSl9KTtzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2ZldGNoJyxmdW5jdGlvbihlKXtlLnJlc3BvbmRXaXRoKGNhY2hlcy5tYXRjaChlLnJlcXVlc3QpLnRoZW4oZnVuY3Rpb24ocil7cmV0dXJuIHJ8fGZldGNoKGUucmVxdWVzdCl9KSl9KTs=');
 }
+// ✅ تثبيت ID علوش D-A 001 على Firebase
+setTimeout(function(){
+    var found = false;
+    function fixAloosh(obj) {
+        if (obj._id === 'D-R 004' && obj.color === 'color-aloosh') {
+            obj._id = 'D-A 001';
+            found = true;
+        }
+        if (obj.children) obj.children.forEach(function(c){ fixAloosh(c); });
+    }
+    fixAloosh(rootData);
+    if (found) {
+        saveData();
+        diwanDB.ref('familyTree').set(rootData);
+    }
+}, 3000);
+
+rebuildTree();
+setTimeout(function(){
 </script>
 </body></html>
